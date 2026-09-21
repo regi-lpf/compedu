@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="1400" height="900" fill="#f5f7fb"/>
+<style>
+.t{font-family:Arial,sans-serif;fill:#152033}.m{font-family:Arial,sans-serif;fill:#6f7b8f}
+.box{fill:#fff;stroke:#e3e8f0;stroke-width:2}.blue{fill:#3157d5}.light{fill:#edf1ff}
+</style>
+<text x="70" y="70" class="t" font-size="32" font-weight="700">Fluxo do CompEdu</text>
+<text x="70" y="100" class="m" font-size="15">Organizado a partir do fluxo desenhado no caderno.</text>
+
+<rect x="70" y="145" width="230" height="80" rx="16" class="blue"/>
+<text x="185" y="193" text-anchor="middle" fill="#fff" font-size="19" font-weight="700" font-family="Arial">Tela inicial</text>
+
+<line x1="300" y1="185" x2="370" y2="185" stroke="#9cabc9" stroke-width="3"/>
+<polygon points="370,185 356,177 356,193" fill="#9cabc9"/>
+
+<rect x="390" y="125" width="360" height="290" rx="16" class="box"/>
+<text x="420" y="165" class="t" font-size="20" font-weight="700">Início</text>
+<rect x="420" y="190" width="300" height="42" rx="10" class="light"/><text x="440" y="216" class="t" font-size="14">Visão geral</text>
+<rect x="420" y="244" width="300" height="58" rx="10" class="light"/><text x="440" y="270" class="t" font-size="14">Próximo conselho de classe</text><text x="440" y="290" class="m" font-size="12">calendário / seleção da data</text>
+<rect x="420" y="314" width="300" height="42" rx="10" class="light"/><text x="440" y="340" class="t" font-size="14">Registros recentes</text>
+<rect x="420" y="368" width="300" height="42" rx="10" class="light"/><text x="440" y="394" class="t" font-size="14">Alunos para acompanhar + nº registros</text>
+
+<rect x="70" y="485" width="230" height="80" rx="16" class="blue"/>
+<text x="185" y="533" text-anchor="middle" fill="#fff" font-size="19" font-weight="700" font-family="Arial">Turmas</text>
+<line x1="300" y1="525" x2="370" y2="525" stroke="#9cabc9" stroke-width="3"/><polygon points="370,525 356,517 356,533" fill="#9cabc9"/>
+<rect x="390" y="455" width="360" height="230" rx="16" class="box"/>
+<text x="420" y="495" class="t" font-size="20" font-weight="700">Cada turma</text>
+<rect x="420" y="520" width="300" height="42" rx="10" class="light"/><text x="440" y="546" class="t" font-size="14">Botão de relatório da turma</text>
+<rect x="420" y="574" width="300" height="42" rx="10" class="light"/><text x="440" y="600" class="t" font-size="14">Lista de alunos</text>
+<rect x="455" y="628" width="265" height="42" rx="10" fill="#f8f9fc" stroke="#e3e8f0"/><text x="475" y="654" class="t" font-size="14">Aluno → registros do aluno</text>
+
+<rect x="860" y="315" width="240" height="80" rx="16" class="blue"/>
+<text x="980" y="363" text-anchor="middle" fill="#fff" font-size="19" font-weight="700" font-family="Arial">Lista de registros</text>
+<line x1="980" y1="395" x2="980" y2="445" stroke="#9cabc9" stroke-width="3"/><polygon points="980,445 972,431 988,431" fill="#9cabc9"/>
+<rect x="815" y="465" width="330" height="230" rx="16" class="box"/>
+<text x="845" y="505" class="t" font-size="20" font-weight="700">Filtros</text>
+<rect x="845" y="530" width="270" height="42" rx="10" class="light"/><text x="865" y="556" class="t" font-size="14">Ano / turma</text>
+<rect x="845" y="584" width="270" height="42" rx="10" class="light"/><text x="865" y="610" class="t" font-size="14">Tipo de registro</text>
+<rect x="845" y="638" width="270" height="42" rx="10" class="light"/><text x="865" y="664" class="t" font-size="14">Por aluno</text>
+
+<line x1="750" y1="270" x2="860" y2="355" stroke="#c1c9d9" stroke-width="2" stroke-dasharray="8 7"/>
+<line x1="750" y1="600" x2="860" y2="380" stroke="#c1c9d9" stroke-width="2" stroke-dasharray="8 7"/>
+<text x="1135" y="780" class="m" font-size="12">CompEdu · protótipo de fluxo v2</text>
+</svg>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1024" viewBox="0 0 1440 1024">
+<defs>
+  <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#1f2a44" flood-opacity=".08"/></filter>
+  <style>
+    .font{font-family:Arial,Helvetica,sans-serif;fill:#152033}
+    .muted{fill:#6f7b8f} .white{fill:#fff} .blue{fill:#3157d5}
+    .label{font-size:11px;font-weight:700;letter-spacing:1px;fill:#3157d5}
+  </style>
+</defs>
+<rect width="1440" height="1024" fill="#f5f7fb"/>
+<rect width="260" height="1024" fill="#111a2d"/>
+<rect x="26" y="28" rx="12" width="44" height="44" fill="#5f7df1"/>
+<text x="48" y="58" text-anchor="middle" class="white" font-size="21" font-weight="700" font-family="Arial">C</text>
+<text x="84" y="46" class="white" font-size="20" font-weight="700" font-family="Arial">CompEdu</text>
+<text x="84" y="64" fill="#9ba8c3" font-size="12" font-family="Arial">Acompanhamento escolar</text>
+<rect x="18" y="105" width="224" height="44" rx="10" fill="#1d2941"/>
+<text x="40" y="133" class="white" font-size="15" font-family="Arial">⌂</text>
+<text x="70" y="133" class="white" font-size="14" font-weight="700" font-family="Arial">Início</text>
+<text x="40" y="185" fill="#aeb9d0" font-size="15" font-family="Arial">▦</text>
+<text x="70" y="185" fill="#aeb9d0" font-size="14" font-family="Arial">Turmas</text>
+<text x="40" y="231" fill="#aeb9d0" font-size="15" font-family="Arial">☷</text>
+<text x="70" y="231" fill="#aeb9d0" font-size="14" font-family="Arial">Registros</text>
+<text x="300" y="42" class="label">COMPEDU</text>
+<text x="300" y="76" class="font" font-size="30" font-weight="700">Lista de registros</text>
+<text x="300" y="100" class="muted" font-size="14" font-family="Arial">Filtre por turma, tipo de registro ou aluno.</text>
+<rect x="1228" y="44" width="164" height="44" rx="10" fill="#3157d5"/>
+<text x="1310" y="71" text-anchor="middle" class="white" font-size="14" font-weight="700" font-family="Arial">+ Novo registro</text>
+<rect x="300" y="135" width="1092" height="820" rx="16" fill="white" stroke="#e3e8f0" filter="url(#shadow)"/>
+<text x="324" y="176" class="font" font-size="18" font-weight="700">Lista de registros</text>
+<text x="324" y="198" class="muted" font-size="13" font-family="Arial">Use os filtros para encontrar rapidamente o que precisa.</text>
+
+<rect x="324" y="228" width="1044" height="112" rx="12" fill="#f8f9fc" stroke="#e3e8f0"/>
+<text x="345" y="254" class="muted" font-size="11" font-weight="700" font-family="Arial">ANO / TURMA</text>
+<rect x="345" y="264" width="250" height="42" rx="10" fill="white" stroke="#e3e8f0"/><text x="361" y="290" class="font" font-size="12">Todas as turmas</text>
+<text x="620" y="254" class="muted" font-size="11" font-weight="700" font-family="Arial">TIPO DE REGISTRO</text>
+<rect x="620" y="264" width="250" height="42" rx="10" fill="white" stroke="#e3e8f0"/><text x="636" y="290" class="font" font-size="12">Todos os tipos</text>
+<text x="895" y="254" class="muted" font-size="11" font-weight="700" font-family="Arial">ALUNO</text>
+<rect x="895" y="264" width="250" height="42" rx="10" fill="white" stroke="#e3e8f0"/><text x="911" y="290" class="font" font-size="12">Todos os alunos</text>
+<text x="1198" y="289" class="blue" font-size="12" font-weight="700" font-family="Arial">Limpar filtros</text>
+
+<text x="324" y="382" class="font" font-size="13" font-weight="700">8 registros</text>
+<text x="414" y="382" class="muted" font-size="11" font-family="Arial">Mostrando todos</text>
+
+<rect x="324" y="405" width="1044" height="112" rx="12" fill="white" stroke="#e3e8f0"/>
+<text x="346" y="435" class="font" font-size="14" font-weight="700">Ana Souza</text><text x="433" y="435" class="muted" font-size="11" font-family="Arial">2º A</text>
+<rect x="468" y="420" width="65" height="22" rx="11" fill="#fff3df"/><text x="500" y="435" text-anchor="middle" fill="#c47d20" font-size="10" font-weight="700" font-family="Arial">Atenção</text>
+<text x="346" y="470" class="muted" font-size="13" font-family="Arial">Conversou repetidamente durante a explicação, mesmo após duas orientações.</text>
+<text x="1215" y="435" class="muted" font-size="11" font-family="Arial">Hoje, 10:20</text>
+
+<rect x="324" y="530" width="1044" height="112" rx="12" fill="white" stroke="#e3e8f0"/>
+<text x="346" y="560" class="font" font-size="14" font-weight="700">Bruno Martins</text><text x="454" y="560" class="muted" font-size="11" font-family="Arial">2º A</text>
+<rect x="488" y="545" width="62" height="22" rx="11" fill="#eaf7ef"/><text x="519" y="560" text-anchor="middle" fill="#2d8a61" font-size="10" font-weight="700" font-family="Arial">Positivo</text>
+<text x="346" y="595" class="muted" font-size="13" font-family="Arial">Participou da atividade em grupo e ajudou colegas na resolução dos exercícios.</text>
+<text x="1202" y="560" class="muted" font-size="11" font-family="Arial">Ontem, 14:05</text>
+
+<rect x="324" y="655" width="1044" height="112" rx="12" fill="white" stroke="#e3e8f0"/>
+<text x="346" y="685" class="font" font-size="14" font-weight="700">Carla Lima</text><text x="424" y="685" class="muted" font-size="11" font-family="Arial">1º B</text>
+<rect x="458" y="670" width="112" height="22" rx="11" fill="#edf1ff"/><text x="514" y="685" text-anchor="middle" fill="#5269bf" font-size="10" font-weight="700" font-family="Arial">Acompanhamento</text>
+<text x="346" y="720" class="muted" font-size="13" font-family="Arial">Apresentou melhora na entrega das atividades. Manter acompanhamento por mais duas semanas.</text>
+<text x="1200" y="685" class="muted" font-size="11" font-family="Arial">14 ago., 09:15</text>
+</svg>

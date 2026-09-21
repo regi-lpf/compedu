@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CompEdu — Acompanhamento Pedagógico</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div>
+          <strong>CompEdu</strong>
+          <span>Acompanhamento escolar</span>
+        </div>
+      </div>
+
+      <nav>
+        <button class="nav-item active" data-view="inicio">
+          <span class="nav-icon">⌂</span><span>Início</span>
+        </button>
+        <button class="nav-item" data-view="turmas">
+          <span class="nav-icon">▦</span><span>Turmas</span>
+        </button>
+        <button class="nav-item" data-view="registros">
+          <span class="nav-icon">☷</span><span>Registros</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-note">
+        <span>Protótipo</span>
+        <strong>Fluxo v2</strong>
+      </div>
+
+      <div class="user">
+        <div class="avatar">WT</div>
+        <div>
+          <strong>Professor</strong>
+          <span>Escola JB</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <div class="breadcrumb" id="breadcrumb">Início</div>
+          <h1 id="page-title">Visão geral</h1>
+          <p id="page-description">O que precisa de atenção agora.</p>
+        </div>
+        <button class="btn primary" id="new-record">+ Novo registro</button>
+      </header>
+
+      <!-- INÍCIO -->
+      <section class="view active-view" id="inicio">
+        <div class="overview-grid">
+          <article class="panel overview-card">
+            <div class="section-label">Visão geral</div>
+            <div class="overview-stats">
+              <div>
+                <strong>128</strong>
+                <span>alunos</span>
+              </div>
+              <div>
+                <strong>6</strong>
+                <span>turmas</span>
+              </div>
+              <div>
+                <strong>37</strong>
+                <span>registros no mês</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel council-card">
+            <div class="panel-title-row">
+              <div>
+                <div class="section-label">Próximo conselho de classe</div>
+                <h2 id="council-date-label">12 de setembro de 2026</h2>
+              </div>
+              <div class="calendar-icon">▣</div>
+            </div>
+            <div class="council-actions">
+              <input type="date" id="council-date" value="2026-09-12">
+              <button class="btn secondary" id="save-council-date">Salvar data</button>
+            </div>
+          </article>
+        </div>
+
+        <div class="home-grid">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Registros recentes</h2>
+                <p>Últimas observações adicionadas pelos professores.</p>
+              </div>
+              <button class="link-btn" data-go="registros">Ver todos</button>
+            </div>
+            <div class="timeline" id="recent-records"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Alunos para acompanhar</h2>
+                <p>Alunos com maior recorrência de registros de atenção.</p>
+              </div>
+            </div>
+            <div id="watch-students"></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- TURMAS -->
+      <section class="view" id="turmas">
+        <div id="classes-home">
+          <div class="section-intro">
+            <h2>Turmas</h2>
+            <p>Entre em uma turma para acessar seus alunos e gerar um relatório.</p>
+          </div>
+          <div class="class-grid" id="class-grid"></div>
+        </div>
+
+        <div id="class-detail" class="hidden">
+          <button class="back-btn" id="back-to-classes">← Voltar para turmas</button>
+
+          <div class="panel class-hero">
+            <div>
+              <div class="section-label">Turma selecionada</div>
+              <h2 id="class-title">2º A</h2>
+              <p id="class-subtitle">27 alunos · Ensino Médio</p>
+            </div>
+            <button class="btn primary" id="class-report">Gerar relatório da turma</button>
+          </div>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Lista de alunos</h2>
+                <p>Clique em um aluno para visualizar seus registros.</p>
+              </div>
+              <input class="search" id="class-student-search" placeholder="Buscar aluno...">
+            </div>
+            <div class="student-list" id="class-student-list"></div>
+          </section>
+        </div>
+
+        <div id="student-detail" class="hidden">
+          <button class="back-btn" id="back-to-class">← Voltar para a turma</button>
+
+          <div class="panel student-hero">
+            <div class="student-main">
+              <div class="student-avatar" id="student-avatar">AS</div>
+              <div>
+                <div class="section-label">Aluno</div>
+                <h2 id="student-name">Ana Souza</h2>
+                <p id="student-class">2º A</p>
+              </div>
+            </div>
+            <button class="btn secondary" id="student-new-record">+ Registrar observação</button>
+          </div>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Registros do aluno</h2>
+                <p>Histórico pedagógico organizado em ordem cronológica.</p>
+              </div>
+            </div>
+            <div class="record-list" id="student-records"></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- REGISTROS -->
+      <section class="view" id="registros">
+        <section class="panel">
+          <div class="panel-head records-head">
+            <div>
+              <h2>Lista de registros</h2>
+              <p>Use os filtros para encontrar rapidamente o que precisa.</p>
+            </div>
+          </div>
+
+          <div class="filters">
+            <label>
+              <span>Ano / turma</span>
+              <select id="filter-class">
+                <option value="all">Todas as turmas</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Tipo de registro</span>
+              <select id="filter-type">
+                <option value="all">Todos os tipos</option>
+                <option value="Positivo">Positivo</option>
+                <option value="Atenção">Atenção</option>
+                <option value="Acompanhamento">Acompanhamento</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Aluno</span>
+              <select id="filter-student">
+                <option value="all">Todos os alunos</option>
+              </select>
+            </label>
+
+            <button class="clear-btn" id="clear-filters">Limpar filtros</button>
+          </div>
+
+          <div class="results-info">
+            <strong id="result-count">0 registros</strong>
+            <span id="active-filter-text">Mostrando todos</span>
+          </div>
+
+          <div class="record-list" id="all-records"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL NOVO REGISTRO -->
+  <div class="modal-layer hidden" id="record-modal">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <h2>Novo registro</h2>
+          <p>Descreva um fato objetivo e relevante para o acompanhamento.</p>
+        </div>
+        <button class="close-btn" id="close-record-modal">×</button>
+      </div>
+
+      <form id="record-form">
+        <label>
+          <span>Aluno</span>
+          <select id="record-student" required></select>
+        </label>
+
+        <label>
+          <span>Tipo de registro</span>
+          <select id="record-type" required>
+            <option value="Positivo">Positivo</option>
+            <option value="Atenção">Atenção</option>
+            <option value="Acompanhamento">Acompanhamento</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Observação</span>
+          <textarea id="record-text" rows="5" required placeholder="Ex.: Participou ativamente da atividade e colaborou com o grupo."></textarea>
+        </label>
+
+        <div class="guidance">
+          Registre fatos observáveis. Evite rótulos, julgamentos pessoais ou diagnósticos.
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn secondary" type="button" id="cancel-record">Cancelar</button>
+          <button class="btn primary" type="submit">Salvar registro</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL RELATÓRIO -->
+  <div class="modal-layer hidden" id="report-modal">
+    <div class="modal report-modal">
+      <div class="modal-head">
+        <div>
+          <div class="section-label">Relatório demonstrativo</div>
+          <h2 id="report-title">Relatório da turma</h2>
+        </div>
+        <button class="close-btn" id="close-report-modal">×</button>
+      </div>
+      <div id="report-content"></div>
+      <div class="modal-actions">
+        <button class="btn secondary" id="close-report-bottom">Fechar</button>
+        <button class="btn primary" onclick="window.print()">Imprimir / salvar PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
