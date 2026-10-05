@@ -18,14 +18,21 @@
       </div>
 
       <nav>
-        <button class="nav-item active" data-view="inicio">
-          <span class="nav-icon">⌂</span><span>Início</span>
+        <button class="nav-item active" data-view="comunicados">
+          <span class="nav-icon">▤</span><span>Mural</span>
+        </button>
+        <button class="nav-item" data-view="inicio">
+          <span class="nav-icon">⌂</span><span>Painel</span>
+        </button>
+        <button class="nav-item" data-view="registros">
+          <span class="nav-icon">☷</span><span>Registros</span>
         </button>
         <button class="nav-item" data-view="turmas">
           <span class="nav-icon">▦</span><span>Turmas</span>
         </button>
-        <button class="nav-item" data-view="registros">
-          <span class="nav-icon">☷</span><span>Registros</span>
+      
+        <button class="nav-item" data-view="administracao">
+          <span class="nav-icon">⚙</span><span>Admin</span>
         </button>
       </nav>
 
@@ -37,8 +44,8 @@
       <div class="user">
         <div class="avatar">WT</div>
         <div>
-          <strong>Professor</strong>
-          <span>Escola JB</span>
+          <strong>William Torres</strong>
+          <span>Professor · Escola JB</span>
         </div>
       </div>
     </aside>
@@ -46,15 +53,18 @@
     <main class="content">
       <header class="topbar">
         <div>
-          <div class="breadcrumb" id="breadcrumb">Início</div>
-          <h1 id="page-title">Visão geral</h1>
-          <p id="page-description">O que precisa de atenção agora.</p>
+          <div class="breadcrumb" id="breadcrumb">Comunicados</div>
+          <h1 id="page-title">Mural interno</h1>
+          <p id="page-description">Informações compartilhadas com as equipes da escola.</p>
         </div>
-        <button class="btn primary" id="new-record">+ Novo registro</button>
+        <div class="topbar-actions">
+          <button class="btn primary" id="new-announcement">+ Novo comunicado</button>
+          <button class="btn primary hidden" id="new-record">+ Novo registro</button>
+        </div>
       </header>
 
       <!-- INÍCIO -->
-      <section class="view active-view" id="inicio">
+      <section class="view" id="inicio">
         <div class="overview-grid">
           <article class="panel overview-card">
             <div class="section-label">Visão geral</div>
@@ -220,6 +230,84 @@
           <div class="record-list" id="all-records"></div>
         </section>
       </section>
+
+      <!-- COMUNICADOS -->
+      <section class="view active-view" id="comunicados">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Mural interno</h2>
+              <p>Comunicados destinados às equipes da escola.</p>
+            </div>
+          </div>
+          <div class="announcement-list" id="announcement-list"></div>
+        </section>
+      </section>
+
+      <!-- ADMINISTRACAO -->
+      <section class="view" id="administracao">
+        <div class="section-intro">
+          <h2>Cadastros da escola</h2>
+          <p>Organize profissionais, turmas e estudantes em um só lugar.</p>
+        </div>
+        <div class="admin-tabs" role="tablist" aria-label="Cadastros da escola">
+          <button class="admin-tab active" type="button" role="tab" aria-selected="true" data-admin-tab="professores">Professores</button>
+          <button class="admin-tab" type="button" role="tab" aria-selected="false" data-admin-tab="turmas">Turmas</button>
+          <button class="admin-tab" type="button" role="tab" aria-selected="false" data-admin-tab="alunos">Alunos</button>
+          <button class="admin-tab" type="button" role="tab" aria-selected="false" data-admin-tab="equipe">Equipe pedagógica</button>
+        </div>
+
+        <section class="admin-panel active" role="tabpanel" id="admin-professores">
+          <div class="admin-form-column">
+            <h3>Novo professor</h3>
+            <form id="teacher-form">
+              <label><span>Nome completo</span><input id="teacher-name" required></label>
+              <label><span>E-mail institucional</span><input id="teacher-email" type="email" required></label>
+              <label><span>Turmas vinculadas</span><select id="teacher-classes" multiple size="4"></select></label>
+              <button class="btn primary" type="submit">Cadastrar professor</button>
+            </form>
+          </div>
+          <div class="admin-list-column"><h3>Professores cadastrados</h3><div id="teacher-list" class="admin-list"></div></div>
+        </section>
+
+        <section class="admin-panel hidden" role="tabpanel" id="admin-turmas">
+          <div class="admin-form-column">
+            <h3>Nova turma</h3>
+            <form id="class-form">
+              <label><span>Identificação da turma</span><input id="admin-class-name" required placeholder="Ex.: 4º A"></label>
+              <label><span>Etapa de ensino</span><select id="admin-class-year"><option>Ensino Fundamental I</option><option>Ensino Fundamental II</option><option>Ensino Médio</option></select></label>
+              <button class="btn primary" type="submit">Cadastrar turma</button>
+            </form>
+          </div>
+          <div class="admin-list-column"><h3>Turmas cadastradas</h3><div id="admin-class-list" class="admin-list"></div></div>
+        </section>
+
+        <section class="admin-panel hidden" role="tabpanel" id="admin-alunos">
+          <div class="admin-form-column">
+            <h3>Novo aluno</h3>
+            <form id="student-form">
+              <label><span>Nome completo</span><input id="admin-student-name" required></label>
+              <label><span>Turma</span><select id="admin-student-class" required></select></label>
+              <button class="btn primary" type="submit">Cadastrar aluno</button>
+            </form>
+          </div>
+          <div class="admin-list-column"><h3>Alunos cadastrados</h3><div id="admin-student-list" class="admin-list"></div></div>
+        </section>
+
+        <section class="admin-panel hidden" role="tabpanel" id="admin-equipe">
+          <div class="admin-form-column">
+            <h3>Novo membro da equipe</h3>
+            <form id="team-form">
+              <label><span>Nome completo</span><input id="team-name" required></label>
+              <label><span>E-mail institucional</span><input id="team-email" type="email" required></label>
+              <label><span>Área de atuação</span><select id="team-area"><option>Coordenação pedagógica</option><option>Secretaria</option><option>Psicopedagogia</option><option>Orientação educacional</option><option>Outro</option></select></label>
+              <button class="btn primary" type="submit">Cadastrar membro</button>
+            </form>
+          </div>
+          <div class="admin-list-column"><h3>Equipe pedagógica cadastrada</h3><div id="team-list" class="admin-list"></div></div>
+        </section>
+        <p class="admin-notice">Cadastros demonstrativos: os dados não são salvos e não alteram permissões de acesso.</p>
+      </section>
     </main>
   </div>
 
@@ -250,6 +338,15 @@
         </label>
 
         <label>
+          <span>Compartilhamento</span>
+          <select id="record-audience" required>
+            <option value="Professores da turma e equipe pedagógica">Professores da turma e equipe pedagógica</option>
+            <option value="Equipe pedagógica">Equipe pedagógica</option>
+            <option value="Conselho de classe">Conselho de classe</option>
+          </select>
+        </label>
+
+        <label>
           <span>Observação</span>
           <textarea id="record-text" rows="5" required placeholder="Ex.: Participou ativamente da atividade e colaborou com o grupo."></textarea>
         </label>
@@ -261,6 +358,47 @@
         <div class="modal-actions">
           <button class="btn secondary" type="button" id="cancel-record">Cancelar</button>
           <button class="btn primary" type="submit">Salvar registro</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL NOVO COMUNICADO -->
+  <div class="modal-layer hidden" id="announcement-modal">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <h2>Novo comunicado</h2>
+          <p>Escolha quem deve visualizar esta mensagem.</p>
+        </div>
+        <button class="close-btn" id="close-announcement-modal" aria-label="Fechar">×</button>
+      </div>
+      <form id="announcement-form">
+        <label>
+          <span>Título</span>
+          <input id="announcement-title" required maxlength="90" placeholder="Ex.: Reunião de planejamento">
+        </label>
+        <label>
+          <span>Público</span>
+          <select id="announcement-audience" required>
+            <option value="Todos os profissionais">Todos os profissionais</option>
+            <option value="Professores">Professores</option>
+            <option value="Equipe pedagógica">Equipe pedagógica</option>
+            <option value="Conselho de classe">Conselho de classe</option>
+          </select>
+        </label>
+        <label>
+          <span>Mensagem</span>
+          <textarea id="announcement-text" rows="4" required maxlength="800" placeholder="Escreva as informações principais."></textarea>
+        </label>
+        <label>
+          <span>Anexos</span>
+          <input id="announcement-files" type="file" multiple>
+        </label>
+        <div id="attachment-preview" class="attachment-preview" aria-live="polite"></div>
+        <div class="modal-actions">
+          <button class="btn secondary" type="button" id="cancel-announcement">Cancelar</button>
+          <button class="btn primary" type="submit">Publicar comunicado</button>
         </div>
       </form>
     </div>

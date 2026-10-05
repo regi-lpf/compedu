@@ -41,13 +41,23 @@ let records = [
   { student:"Eduarda Alves", cls:"1º A", classId:"1A", type:"Positivo", text:"Apresentou o trabalho com clareza e bom domínio do conteúdo.", date:"6 ago., 09:40", teacher:"Prof. Renan" }
 ];
 
+let announcements = [
+  { title:"Conselho de classe — 2º ano", audience:"Professores", text:"Nosso conselho de classe acontece em 12 de setembro. Organizem os registros pedagógicos da turma até a véspera.", date:"Hoje · 09:00", author:"Coordenação pedagógica", attachments:[] },
+  { title:"Atualização do calendário escolar", audience:"Todos os profissionais", text:"O calendário do segundo semestre foi atualizado. A versão revisada está disponível na secretaria.", date:"Ontem · 16:30", author:"Secretaria escolar", attachments:[] }
+];
+
+const teachers = [];
+const teamMembers = [];
+
 let selectedClass = null;
 let selectedStudent = null;
 
 const viewInfo = {
-  inicio:["Início","Visão geral","O que precisa de atenção agora."],
+  inicio:["Painel","Visão geral","O que precisa de atenção agora."],
   turmas:["Turmas","Turmas","Acesse uma turma e depois o histórico de cada aluno."],
-  registros:["Registros","Lista de registros","Filtre por turma, tipo de registro ou aluno."]
+  registros:["Registros","Lista de registros","Filtre por turma, tipo de registro ou aluno."],
+  comunicados:["Mural","Mural interno","Informações compartilhadas com as equipes da escola."],
+  administracao:["Administração","Cadastros da escola","Gerencie professores, turmas, alunos e equipe pedagógica."]
 };
 
 function initials(name){
@@ -74,9 +84,13 @@ function showView(view){
   document.getElementById("breadcrumb").textContent=viewInfo[view][0];
   document.getElementById("page-title").textContent=viewInfo[view][1];
   document.getElementById("page-description").textContent=viewInfo[view][2];
+  document.getElementById("new-record").classList.toggle("hidden",view==="comunicados"||view==="administracao");
+  document.getElementById("new-announcement").classList.toggle("hidden",view!=="comunicados");
 
   if(view==="turmas") showClassesHome();
   if(view==="registros") renderAllRecords();
+  if(view==="comunicados") renderAnnouncements();
+  if(view==="administracao") renderAdminLists();
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
@@ -242,9 +256,114 @@ function recordCard(r){
         <span class="record-meta">${r.date} · ${r.teacher}</span>
       </div>
       <p>${escapeHtml(r.text)}</p>
+      <div class="record-access">Compartilhado com: ${escapeHtml(r.audience||"Professores da turma e equipe pedagógica")}</div>
     </article>
   `;
 }
+
+function renderAnnouncements(){
+  const list=document.getElementById("announcement-list");
+  list.innerHTML=announcements.length?announcements.map(item=>`
+    <article class="announcement-item">
+      <div class="announcement-top">
+        <div>
+          <h3>${escapeHtml(item.title)}</h3>
+          <span class="audience-badge">${escapeHtml(item.audience)}</span>
+        </div>
+        <time>${escapeHtml(item.date)}</time>
+      </div>
+      <p>${escapeHtml(item.text)}</p>
+      ${item.attachments?.length?`<ul class="announcement-attachments">${item.attachments.map(file=>`<li><a href="${escapeHtml(file.url)}" download="${escapeHtml(file.name)}">${escapeHtml(file.name)}</a></li>`).join("")}</ul>`:""}
+      <div class="announcement-author">Publicado por ${escapeHtml(item.author)}</div>
+    </article>
+  `).join(""):"<p class=\"empty-state\">Nenhum comunicado publicado.</p>";
+}
+
+function populateAdminClassOptions(){
+  const options=classes.map(item=>`<option value="${escapeHtml(item.id)}">${escapeHtml(item.name)} · ${escapeHtml(item.year)}</option>`).join("");
+  document.getElementById("teacher-classes").innerHTML=options;
+  document.getElementById("admin-student-class").innerHTML=options;
+}
+
+function renderAdminLists(){
+  populateAdminClassOptions();
+  document.getElementById("teacher-list").innerHTML=teachers.length?teachers.map(teacher=>{
+    const classNames=teacher.classIds.map(id=>classes.find(item=>item.id===id)?.name).filter(Boolean);
+    return `<article class="admin-list-item"><strong>${escapeHtml(teacher.name)}</strong><span>${escapeHtml(teacher.email)}</span><small>Turmas: ${escapeHtml(classNames.join(", ")||"Nenhuma vinculada")}</small></article>`;
+  }).join(""):`<p class="empty-state">Nenhum professor cadastrado nesta sessão.</p>`;
+  document.getElementById("admin-class-list").innerHTML=classes.map(item=>{
+    const count=students.filter(student=>student.classId===item.id).length;
+    return `<article class="admin-list-item"><strong>${escapeHtml(item.name)}</strong><span>${escapeHtml(item.year)}</span><small>${count} aluno(s) na amostra</small></article>`;
+  }).join("");
+  document.getElementById("admin-student-list").innerHTML=students.map(student=>`
+    <article class="admin-list-item"><strong>${escapeHtml(student.name)}</strong><span>${escapeHtml(student.cls)}</span></article>
+  `).join("");
+  document.getElementById("team-list").innerHTML=teamMembers.length?teamMembers.map(member=>`
+    <article class="admin-list-item"><strong>${escapeHtml(member.name)}</strong><span>${escapeHtml(member.area)}</span><small>${escapeHtml(member.email)}</small></article>
+  `).join(""):`<p class="empty-state">Nenhum membro cadastrado nesta sessão.</p>`;
+}
+
+document.querySelectorAll("[data-admin-tab]").forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    document.querySelectorAll("[data-admin-tab]").forEach(item=>{
+      const selected=item===tab;
+      item.classList.toggle("active",selected);
+      item.setAttribute("aria-selected",String(selected));
+    });
+    document.querySelectorAll(".admin-panel").forEach(panel=>panel.classList.toggle("hidden",panel.id!==`admin-${tab.dataset.adminTab}`));
+  });
+});
+
+document.getElementById("teacher-form").addEventListener("submit",event=>{
+  event.preventDefault();
+  teachers.push({
+    name:document.getElementById("teacher-name").value.trim(),
+    email:document.getElementById("teacher-email").value.trim(),
+    classIds:[...document.getElementById("teacher-classes").selectedOptions].map(option=>option.value)
+  });
+  event.currentTarget.reset();
+  renderAdminLists();
+});
+
+document.getElementById("class-form").addEventListener("submit",event=>{
+  event.preventDefault();
+  const name=document.getElementById("admin-class-name").value.trim();
+  classes.push({
+    id:`class-${Date.now()}`,
+    name,
+    year:document.getElementById("admin-class-year").value,
+    students:0,
+    records:0
+  });
+  event.currentTarget.reset();
+  populateFilters();
+  renderAdminLists();
+  renderClasses();
+});
+
+document.getElementById("student-form").addEventListener("submit",event=>{
+  event.preventDefault();
+  const classId=document.getElementById("admin-student-class").value;
+  const classInfo=classes.find(item=>item.id===classId);
+  if(!classInfo) return;
+  students.push({name:document.getElementById("admin-student-name").value.trim(),cls:classInfo.name,classId});
+  classInfo.students+=1;
+  event.currentTarget.reset();
+  populateFilters();
+  renderAdminLists();
+  renderClasses();
+});
+
+document.getElementById("team-form").addEventListener("submit",event=>{
+  event.preventDefault();
+  teamMembers.push({
+    name:document.getElementById("team-name").value.trim(),
+    email:document.getElementById("team-email").value.trim(),
+    area:document.getElementById("team-area").value
+  });
+  event.currentTarget.reset();
+  renderAdminLists();
+});
 
 function renderAllRecords(){
   const cls=document.getElementById("filter-class").value;
@@ -309,6 +428,7 @@ document.getElementById("record-form").addEventListener("submit",e=>{
     cls:s.cls,
     classId:s.classId,
     type:document.getElementById("record-type").value,
+    audience:document.getElementById("record-audience").value,
     text:document.getElementById("record-text").value,
     date:"Agora",
     teacher:"Professor"
@@ -320,6 +440,36 @@ document.getElementById("record-form").addEventListener("submit",e=>{
   renderClasses();
   if(selectedStudent?.name===name) renderStudentRecords();
   renderAllRecords();
+});
+
+const announcementModal=document.getElementById("announcement-modal");
+function openAnnouncementModal(){announcementModal.classList.remove("hidden")}
+function closeAnnouncementModal(){announcementModal.classList.add("hidden")}
+document.getElementById("new-announcement").addEventListener("click",openAnnouncementModal);
+document.getElementById("close-announcement-modal").addEventListener("click",closeAnnouncementModal);
+document.getElementById("cancel-announcement").addEventListener("click",closeAnnouncementModal);
+announcementModal.addEventListener("click",e=>{if(e.target===announcementModal)closeAnnouncementModal()});
+document.getElementById("announcement-files").addEventListener("change",event=>{
+  const names=[...event.currentTarget.files].map(file=>file.name);
+  document.getElementById("attachment-preview").textContent=names.length?`Selecionados: ${names.join(" · ")}`:"";
+});
+document.getElementById("announcement-form").addEventListener("submit",e=>{
+  e.preventDefault();
+  const files=[...document.getElementById("announcement-files").files].map(file=>({
+    name:file.name,
+    url:URL.createObjectURL(file)
+  }));
+  announcements.unshift({
+    title:document.getElementById("announcement-title").value,
+    audience:document.getElementById("announcement-audience").value,
+    text:document.getElementById("announcement-text").value,
+    date:"Agora",
+    author:"William Torres",
+    attachments:files
+  });
+  e.currentTarget.reset();
+  closeAnnouncementModal();
+  renderAnnouncements();
 });
 
 const reportModal=document.getElementById("report-modal");
@@ -359,3 +509,5 @@ renderRecent();
 renderWatch();
 renderClasses();
 renderAllRecords();
+renderAnnouncements();
+populateAdminClassOptions();
