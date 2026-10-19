@@ -42,8 +42,8 @@ let records = [
 ];
 
 let announcements = [
-  { title:"Conselho de classe — 2º ano", audience:"Professores", text:"Nosso conselho de classe acontece em 12 de setembro. Organizem os registros pedagógicos da turma até a véspera.", date:"Hoje · 09:00", author:"Coordenação pedagógica", attachments:[] },
-  { title:"Atualização do calendário escolar", audience:"Todos os profissionais", text:"O calendário do segundo semestre foi atualizado. A versão revisada está disponível na secretaria.", date:"Ontem · 16:30", author:"Secretaria escolar", attachments:[] }
+  { title:"Conselho de classe — 2º ano", accessLevel:2, text:"Nosso conselho de classe acontece em 12 de setembro. Organizem os registros pedagógicos da turma até a véspera.", date:"Hoje · 09:00", author:"Coordenação pedagógica", attachments:[] },
+  { title:"Atualização do calendário escolar", accessLevel:5, text:"O calendário do segundo semestre foi atualizado. A versão revisada está disponível na secretaria.", date:"Ontem · 16:30", author:"Secretaria escolar", attachments:[] }
 ];
 
 const teachers = [];
@@ -256,7 +256,7 @@ function recordCard(r){
         <span class="record-meta">${r.date} · ${r.teacher}</span>
       </div>
       <p>${escapeHtml(r.text)}</p>
-      <div class="record-access">Compartilhado com: ${escapeHtml(r.audience||"Professores da turma e equipe pedagógica")}</div>
+      <div class="record-access">Nível de acesso: ${escapeHtml(String(r.accessLevel||3))} · usuários nesse nível e nos níveis numericamente maiores podem visualizar</div>
     </article>
   `;
 }
@@ -268,7 +268,7 @@ function renderAnnouncements(){
       <div class="announcement-top">
         <div>
           <h3>${escapeHtml(item.title)}</h3>
-          <span class="audience-badge">${escapeHtml(item.audience)}</span>
+          <span class="access-level-badge">Nível ${escapeHtml(String(item.accessLevel||3))}</span>
         </div>
         <time>${escapeHtml(item.date)}</time>
       </div>
@@ -428,7 +428,7 @@ document.getElementById("record-form").addEventListener("submit",e=>{
     cls:s.cls,
     classId:s.classId,
     type:document.getElementById("record-type").value,
-    audience:document.getElementById("record-audience").value,
+    accessLevel:Number(document.getElementById("record-access-level").value),
     text:document.getElementById("record-text").value,
     date:"Agora",
     teacher:"Professor"
@@ -461,7 +461,7 @@ document.getElementById("announcement-form").addEventListener("submit",e=>{
   }));
   announcements.unshift({
     title:document.getElementById("announcement-title").value,
-    audience:document.getElementById("announcement-audience").value,
+    accessLevel:Number(document.getElementById("announcement-access-level").value),
     text:document.getElementById("announcement-text").value,
     date:"Agora",
     author:"William Torres",

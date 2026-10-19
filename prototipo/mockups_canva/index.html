@@ -338,11 +338,13 @@
         </label>
 
         <label>
-          <span>Compartilhamento</span>
-          <select id="record-audience" required>
-            <option value="Professores da turma e equipe pedagógica">Professores da turma e equipe pedagógica</option>
-            <option value="Equipe pedagógica">Equipe pedagógica</option>
-            <option value="Conselho de classe">Conselho de classe</option>
+          <span>Nível de acesso</span>
+          <select id="record-access-level" required>
+            <option value="3">Nível 3 — padrão</option>
+            <option value="1">Nível 1 — acesso mais alto</option>
+            <option value="2">Nível 2</option>
+            <option value="4">Nível 4</option>
+            <option value="5">Nível 5</option>
           </select>
         </label>
 
@@ -369,7 +371,7 @@
       <div class="modal-head">
         <div>
           <h2>Novo comunicado</h2>
-          <p>Escolha quem deve visualizar esta mensagem.</p>
+          <p>O nível 1 tem maior acesso. Cada nível vê publicações do próprio nível e dos níveis numericamente maiores.</p>
         </div>
         <button class="close-btn" id="close-announcement-modal" aria-label="Fechar">×</button>
       </div>
@@ -379,12 +381,13 @@
           <input id="announcement-title" required maxlength="90" placeholder="Ex.: Reunião de planejamento">
         </label>
         <label>
-          <span>Público</span>
-          <select id="announcement-audience" required>
-            <option value="Todos os profissionais">Todos os profissionais</option>
-            <option value="Professores">Professores</option>
-            <option value="Equipe pedagógica">Equipe pedagógica</option>
-            <option value="Conselho de classe">Conselho de classe</option>
+          <span>Nível de acesso</span>
+          <select id="announcement-access-level" required>
+            <option value="3">Nível 3 — padrão</option>
+            <option value="1">Nível 1 — acesso mais alto</option>
+            <option value="2">Nível 2</option>
+            <option value="4">Nível 4</option>
+            <option value="5">Nível 5</option>
           </select>
         </label>
         <label>

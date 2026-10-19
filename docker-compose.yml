@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: compedu
+      POSTGRES_USER: compedu
+      POSTGRES_PASSWORD: change-me
+    ports:
+      - "5432:5432"
+    volumes:
+      - compedu_pgdata:/var/lib/postgresql/data
+
+volumes:
+  compedu_pgdata:
