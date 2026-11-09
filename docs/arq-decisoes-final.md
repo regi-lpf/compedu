@@ -43,12 +43,12 @@ graph TD
     
     subgraph FastAPI Backend
         FastAPI --> Auth[Módulo de Autenticação & Google OAuth2]
-        FastAPI --> RBAC[Middleware de Autorização (Níveis 1-5 & Vínculos)]
+        FastAPI --> RBAC[Middleware de Autorização Níveis 1-5 & Vínculos]
         Auth --> ORM[SQLAlchemy ORM]
         RBAC --> ORM
     end
 
-    ORM -->|Conexão Segura| DB[(Banco de Dados PostgreSQL / SQLite)]
+    ORM -->|Conexão Segura| DB[Banco de Dados PostgreSQL/SQLite]
 ```
 
 ---
