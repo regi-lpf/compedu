@@ -14,24 +14,21 @@ A experiência do usuário é desenhada a partir das tarefas diárias da equipe 
 
 ---
 
-## 2. Matriz de Acessos e Níveis de Permissão
+## 2. Matriz de Acessos e Níveis de Permissão (Vertical e Horizontal com Intersecção)
 
-O controle de segurança da plataforma é híbrido, combinando **Papéis de Usuário (`role`)** e uma **Escala Numérica de Nível de Acesso (1 a 5)**.
+O controle de segurança da plataforma é híbrido e estruturado em duas dimensões complementares:
+* **Eixo Vertical (Níveis Numéricos de 1 a 5):** Controla a faixa de sigilo e leitura. O nível `1` é o mais alto. A regra padrão de leitura obedece a $P \ge U$ (o usuário no nível $U$ visualiza conteúdos de nível $P$).
+* **Eixo Horizontal (Vínculos e Papéis):** Restringe o escopo de atuação por turmas, ciclos ou atribuições específicas (intersecção organizacional).
 
-### 2.1. Regra de Níveis Numéricos (1 a 5)
-* O número `1` representa o nível hierárquico mais alto.
-* **Regra de Visualização ($P \ge U$):** Um usuário posicionado no nível $U$ possui permissão para visualizar conteúdos marcados com o nível $P$ se, e somente se, $P \ge U$ (por exemplo, um usuário de nível 2 visualiza conteúdos dos níveis 2, 3, 4 e 5).
-* **Restrição de Criação:** Nenhum usuário pode criar publicações ou registros em um nível de acesso numericamente superior ao seu próprio nível hierárquico.
+### 2.1. Matriz de Papéis Institucionais e Escopo
 
-### 2.2. Matriz de Papéis Institucionais
-
-| Papel (`role`) | Nível Padrão (`level`) | Escopo de Leitura (Regra: $P \ge U$) | Permissões Principais de Escrita / Ações |
-| :--- | :---: | :--- | :--- |
-| **Administrador** (`admin`) | `1` (Mais alto) | Vê todos os níveis (1 a 5) | Gestão completa de cadastros (turmas, alunos, usuários). |
-| **Coordenação** (`coordination`) | `2` | Vê níveis 2, 3, 4 e 5 | Emissão de relatórios consolidados, comunicados gerais, supervisão. |
-| **Professor** (`teacher`) | `3` (Padrão) | Vê níveis 3, 4 e 5 | Criação de registros pedagógicos (restrito às próprias turmas vinculadas). |
-| **Secretaria** (`secretary`) | `4` | Vê níveis 4 e 5 | Gestão administrativa, calendário e suporte operacional. |
-| **Suporte** (`support`) | `5` (Mais restrito) | Vê apenas nível 5 | Manutenção técnica e logs gerais de infraestrutura. |
+| Papel (`role`) | Nível Padrão (`level`) | Escopo de Leitura (Vertical: $P \ge U$) | Escopo Horizontal / Restrições de Domínio | Permissões de Escrita / Ações |
+| :--- | :---: | :--- | :--- | :--- |
+| **Administrador** (`admin`) | `1` (Mais alto) | Vê todos os níveis (1 a 5) | Global (sem restrição de turma). | Gestão completa de cadastros, usuários, turmas e alunos. |
+| **Coordenação / Equipe Pedagógica** (`coordination`) | `2` | Vê níveis 2, 3, 4 e 5 | Global ou por ciclo/etapa sob supervisão. **Não recebe acesso padrão aos registros pedagógicos de rotina dos professores**, atuando em nível estratégico e de encaminhamento. | Emissão de relatórios consolidados, comunicados gerais, supervisão e conselho de classe. |
+| **Professor** (`teacher`) | `3` (Padrão) | Vê níveis 3, 4 e 5 | Restrito estritamente às **próprias turmas vinculadas** no ano letivo vigente. | Criação e consulta de registros pedagógicos das suas turmas. |
+| **Secretaria** (`secretary`) | `4` | Vê níveis 4 e 5 | Administrativo / Operacional (sem acesso pedagógico por padrão). | Gestão de matrículas, calendário escolar e atendimento básico. |
+| **Suporte** (`support`) | `5` (Mais restrito) | Vê apenas nível 5 | Técnico / Logs gerais. | Manutenção da infraestrutura e auditoria técnica. |
 
 ---
 
@@ -41,7 +38,7 @@ A aplicação utiliza uma arquitetura desacoplada otimizada para o ecossistema S
 
 ```mermaid
 graph TD
-    User([Usuário / Equipe Escolar]) -->|HTTPS / Google OAuth2| Vercel[Frontend Estático (HTML/CSS/JS) na Vercel]
+    User([Usuário / Equipe Escolar]) -->|HTTPS / Google OAuth2| Vercel[Frontend Estático ( HTML //CSS // JS ) na Vercel]
     Vercel -->|Chamadas REST API /api/*| FastAPI[Backend FastAPI (Serverless / Container)]
     
     subgraph FastAPI Backend
