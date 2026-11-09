@@ -39,7 +39,7 @@ A aplicação utiliza uma arquitetura desacoplada otimizada para o ecossistema S
 ```mermaid
 graph TD
     User([Usuário / Equipe Escolar]) -->|HTTPS / Google OAuth2| Vercel[Frontend Estático HTML/CSS/JS na Vercel]
-    Vercel -->|Chamadas REST API /api/*| FastAPI[Backend FastAPI (Serverless / Container)]
+    Vercel -->|Chamadas REST API /api/*| FastAPI[Backend FastAPI Serverless/Container]
     
     subgraph FastAPI Backend
         FastAPI --> Auth[Módulo de Autenticação & Google OAuth2]
