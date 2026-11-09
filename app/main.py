@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.api import router
@@ -32,4 +33,8 @@ def health():
     return {"status": "ok"}
 
 
-app.mount("/", StaticFiles(directory="prototipo/mockups_canva", html=True), name="prototype")
+app.mount("/static", StaticFiles(directory="prototipo/", html=True), name="static")
+
+@app.get("/")
+def read_index():
+    return FileResponse("prototipo/index.html")
