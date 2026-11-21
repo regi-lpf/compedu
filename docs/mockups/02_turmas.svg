@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1024" viewBox="0 0 1440 1024">
+<defs>
+  <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#1f2a44" flood-opacity=".08"/></filter>
+  <style>
+    .font{font-family:Arial,Helvetica,sans-serif;fill:#152033}
+    .muted{fill:#6f7b8f} .white{fill:#fff} .blue{fill:#3157d5}
+    .label{font-size:11px;font-weight:700;letter-spacing:1px;fill:#3157d5}
+  </style>
+</defs>
+<rect width="1440" height="1024" fill="#f5f7fb"/>
+<rect width="260" height="1024" fill="#111a2d"/>
+<rect x="26" y="28" rx="12" width="44" height="44" fill="#5f7df1"/>
+<text x="48" y="58" text-anchor="middle" class="white" font-size="21" font-weight="700" font-family="Arial">C</text>
+<text x="84" y="46" class="white" font-size="20" font-weight="700" font-family="Arial">CompEdu</text>
+<text x="84" y="64" fill="#9ba8c3" font-size="12" font-family="Arial">Acompanhamento escolar</text>
+<rect x="18" y="105" width="224" height="44" rx="10" fill="#1d2941"/>
+<text x="40" y="133" class="white" font-size="15" font-family="Arial">⌂</text>
+<text x="70" y="133" class="white" font-size="14" font-weight="700" font-family="Arial">Início</text>
+<text x="40" y="185" fill="#aeb9d0" font-size="15" font-family="Arial">▦</text>
+<text x="70" y="185" fill="#aeb9d0" font-size="14" font-family="Arial">Turmas</text>
+<text x="40" y="231" fill="#aeb9d0" font-size="15" font-family="Arial">☷</text>
+<text x="70" y="231" fill="#aeb9d0" font-size="14" font-family="Arial">Registros</text>
+<text x="300" y="42" class="label">COMPEDU</text>
+<text x="300" y="76" class="font" font-size="30" font-weight="700">Turmas</text>
+<text x="300" y="100" class="muted" font-size="14" font-family="Arial">Acesse uma turma e depois o histórico de cada aluno.</text>
+<rect x="1228" y="44" width="164" height="44" rx="10" fill="#3157d5"/>
+<text x="1310" y="71" text-anchor="middle" class="white" font-size="14" font-weight="700" font-family="Arial">+ Novo registro</text>
+<text x="300" y="148" class="font" font-size="18" font-weight="700">Turmas</text>
+<text x="300" y="171" class="muted" font-size="13" font-family="Arial">Entre em uma turma para acessar seus alunos e gerar um relatório.</text>
+<g filter="url(#shadow)">
+<rect x="300" y="205" width="340" height="190" rx="16" fill="white" stroke="#e3e8f0"/>
+<rect x="658" y="205" width="340" height="190" rx="16" fill="white" stroke="#e3e8f0"/>
+<rect x="1016" y="205" width="340" height="190" rx="16" fill="white" stroke="#e3e8f0"/>
+<rect x="300" y="413" width="340" height="190" rx="16" fill="white" stroke="#e3e8f0"/>
+<rect x="658" y="413" width="340" height="190" rx="16" fill="white" stroke="#e3e8f0"/>
+<rect x="1016" y="413" width="340" height="190" rx="16" fill="white" stroke="#e3e8f0"/>
+</g>
+<text x="324" y="245" class="font" font-size="22" font-weight="700">1º A</text><text x="324" y="270" class="muted" font-size="13" font-family="Arial">1º ano · Ensino Médio</text>
+<text x="610" y="245" class="blue" font-size="20" font-weight="700" font-family="Arial">→</text>
+<line x1="324" y1="312" x2="616" y2="312" stroke="#e3e8f0"/>
+<text x="324" y="347" class="font" font-size="18" font-weight="700">28</text><text x="324" y="368" class="muted" font-size="11" font-family="Arial">alunos</text>
+<text x="480" y="347" class="font" font-size="18" font-weight="700">2</text><text x="480" y="368" class="muted" font-size="11" font-family="Arial">registros</text>
+
+<text x="682" y="245" class="font" font-size="22" font-weight="700">1º B</text><text x="682" y="270" class="muted" font-size="13" font-family="Arial">1º ano · Ensino Médio</text>
+<text x="968" y="245" class="blue" font-size="20" font-weight="700" font-family="Arial">→</text>
+<line x1="682" y1="312" x2="974" y2="312" stroke="#e3e8f0"/>
+<text x="682" y="347" class="font" font-size="18" font-weight="700">30</text><text x="682" y="368" class="muted" font-size="11" font-family="Arial">alunos</text>
+<text x="838" y="347" class="font" font-size="18" font-weight="700">2</text><text x="838" y="368" class="muted" font-size="11" font-family="Arial">registros</text>
+
+<text x="1040" y="245" class="font" font-size="22" font-weight="700">2º A</text><text x="1040" y="270" class="muted" font-size="13" font-family="Arial">2º ano · Ensino Médio</text>
+<text x="1326" y="245" class="blue" font-size="20" font-weight="700" font-family="Arial">→</text>
+<line x1="1040" y1="312" x2="1332" y2="312" stroke="#e3e8f0"/>
+<text x="1040" y="347" class="font" font-size="18" font-weight="700">27</text><text x="1040" y="368" class="muted" font-size="11" font-family="Arial">alunos</text>
+<text x="1196" y="347" class="font" font-size="18" font-weight="700">3</text><text x="1196" y="368" class="muted" font-size="11" font-family="Arial">registros</text>
+
+<text x="324" y="453" class="font" font-size="22" font-weight="700">2º B</text><text x="324" y="478" class="muted" font-size="13" font-family="Arial">2º ano · Ensino Médio</text>
+<text x="682" y="453" class="font" font-size="22" font-weight="700">3º A</text><text x="682" y="478" class="muted" font-size="13" font-family="Arial">3º ano · Ensino Médio</text>
+<text x="1040" y="453" class="font" font-size="22" font-weight="700">3º B</text><text x="1040" y="478" class="muted" font-size="13" font-family="Arial">3º ano · Ensino Médio</text>
+
+<rect x="300" y="660" width="1056" height="220" rx="16" fill="#ffffff" stroke="#e3e8f0" filter="url(#shadow)"/>
+<text x="324" y="699" class="label">EXEMPLO AO ENTRAR NA TURMA</text>
+<text x="324" y="733" class="font" font-size="21" font-weight="700">2º A</text>
+<rect x="1150" y="701" width="176" height="40" rx="10" fill="#3157d5"/>
+<text x="1238" y="726" text-anchor="middle" class="white" font-size="12" font-weight="700" font-family="Arial">Gerar relatório</text>
+<text x="324" y="777" class="font" font-size="14" font-weight="700">Ana Souza</text><text x="600" y="777" class="muted" font-size="12" font-family="Arial">3 registros</text><text x="1300" y="777" class="blue" font-size="16" font-weight="700" font-family="Arial">→</text>
+<line x1="324" y1="795" x2="1328" y2="795" stroke="#e3e8f0"/>
+<text x="324" y="827" class="font" font-size="14" font-weight="700">Bruno Martins</text><text x="600" y="827" class="muted" font-size="12" font-family="Arial">1 registro</text><text x="1300" y="827" class="blue" font-size="16" font-weight="700" font-family="Arial">→</text>
+</svg>
