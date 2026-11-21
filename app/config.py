@@ -2,7 +2,7 @@ from functools import cached_property
 from pathlib import Path
 from typing import Literal
 
-from pydantic import model_validator
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DEV_SECRET = "development-only-change-this-secret-0123456789"
@@ -17,11 +17,16 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:8000,http://127.0.0.1:8000"
 
     # Autenticação
-    google_client_id: str = ""
-    allowed_domain: str = ""  # ex.: escola.edu.br — vazio aceita qualquer domínio verificado pelo Google
-    auth_dev_login: bool = True  # login por e-mail/senha; desligue em produção se quiser só Google
+    google_client_id: str = Field(default="", validation_alias="GOOGLE_CLIENT_ID")
+    allowed_domain: str = Field(default="", validation_alias="ALLOWED_DOMAIN")  # ex.: escola.edu.br
+    auth_dev_login: bool = Field(default=False, validation_alias="AUTH_DEV_LOGIN")
 
-    model_config = SettingsConfigDict(env_file=BASE_DIR / ".env", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=BASE_DIR / ".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+        populate_by_name=True,
+    )
 
     @model_validator(mode="after")
     def _check_production(self) -> "Settings":

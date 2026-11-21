@@ -38,6 +38,20 @@ def test_auth_config(client):
     assert cfg["google_client_id"] == "test-client-id" and cfg["dev_login_enabled"] is True
 
 
+def test_google_settings_load_environment_variables(monkeypatch):
+    from app.config import Settings
+
+    monkeypatch.setenv("GOOGLE_CLIENT_ID", "configured-client-id")
+    monkeypatch.setenv("ALLOWED_DOMAIN", "escola.edu.br")
+    monkeypatch.setenv("AUTH_DEV_LOGIN", "true")
+
+    configured = Settings(_env_file=None)
+
+    assert configured.google_client_id == "configured-client-id"
+    assert configured.allowed_domain == "escola.edu.br"
+    assert configured.auth_dev_login is True
+
+
 def test_google_login_maps_to_registered_profile(client, world, monkeypatch):
     def fake_verify(credential):
         if credential == "token-invalido-xx":
