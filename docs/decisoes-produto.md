@@ -33,7 +33,9 @@ Este documento registra as decisões de produto e o estado atual de implementaç
 ## Conta e login (implementado)
 
 - Não há tela de conta separada: o rodapé da sidebar exibe nome, papel e nível, e ao clicar abre o popover com e-mail, turmas vinculadas no ano ativo e o botão **Sair da conta**.
-- A autenticação é direta por e-mail e senha (`POST /api/auth/login`), com hash Argon2 e token JWT, para contas cadastradas e ativas gerenciadas pela administração da escola (sem dependência de OAuth externo).
+- O perfil CompEdu (papel, nível e vínculos escolares) é gerenciado pela administração e separado da identidade de autenticação.
+- A autenticação principal usa **Google OAuth2** (`POST /api/auth/google`), validando o token do Google Identity Services e exigindo que o e-mail pertença a uma conta cadastrada e ativa no CompEdu (com restrição opcional de domínio institucional `ALLOWED_DOMAIN`).
+- Para desenvolvimento local e testes automatizados, o login por e-mail/senha permanece disponível enquanto `AUTH_DEV_LOGIN=true`.
 
 ## Evoluções futuras (fora do escopo atual)
 

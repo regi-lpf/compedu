@@ -16,6 +16,11 @@ class Settings(BaseSettings):
     access_token_minutes: int = 60
     cors_origins: str = "http://localhost:8000,http://127.0.0.1:8000"
 
+    # Autenticação
+    google_client_id: str = ""
+    allowed_domain: str = ""  # ex.: escola.edu.br — vazio aceita qualquer domínio verificado pelo Google
+    auth_dev_login: bool = True  # login por e-mail/senha; desligue em produção se quiser só Google
+
     model_config = SettingsConfigDict(env_file=BASE_DIR / ".env", extra="ignore")
 
     @model_validator(mode="after")

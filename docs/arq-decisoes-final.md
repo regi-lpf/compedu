@@ -1,6 +1,6 @@
 # CompEdu — Arquitetura, Decisões de Produto e Diagramas UML
 
-Este documento consolida as diretrizes arquiteturais, o modelo de segurança, a matriz de acessos e os diagramas estruturais definitivos do sistema **CompEdu**. O conteúdo descreve a aplicação voltada para o ambiente de ensino básico, considerando o deploy na **Vercel** e autenticação própria via JWT.
+Este documento consolida as diretrizes arquiteturais, o modelo de segurança, a matriz de acessos e os diagramas estruturais definitivos do sistema **CompEdu**. O conteúdo descreve a aplicação voltada para o ambiente de ensino básico, considerando o deploy em infraestrutura moderna (**Vercel**) e autenticação federada via **Google OAuth2**.
 
 ---
 
@@ -38,11 +38,11 @@ A aplicação utiliza uma arquitetura desacoplada otimizada para o ecossistema S
 
 ```mermaid
 graph TD
-    User([Usuário / Equipe Escolar]) -->|HTTPS / Login JWT| Vercel[Frontend Estático HTML/CSS/JS em frontend/]
+    User([Usuário / Equipe Escolar]) -->|HTTPS / Google OAuth2| Vercel[Frontend Estático HTML/CSS/JS em frontend/]
     Vercel -->|Chamadas REST API /api/*| FastAPI[FastAPI Serverless Function api/index.py]
     
     subgraph FastAPI Backend
-        FastAPI --> Auth[Módulo de Autenticação JWT + Argon2]
+        FastAPI --> Auth[Módulo de Autenticação JWT & Google OAuth2]
         FastAPI --> RBAC[Política Centralizada app/policies.py: Níveis 1-5 & Vínculos]
         Auth --> ORM[SQLAlchemy 2.0 ORM + Alembic]
         RBAC --> ORM
@@ -160,7 +160,7 @@ classDiagram
 
 * **Frontend:** Servido a partir de `frontend/` na **Vercel** (`outputDirectory: "frontend"`), integrando-se via requisições assíncronas encapsuladas em `frontend/api.js`.
 * **Backend:** Desenvolvido em **FastAPI** (Python), exposto em `api/index.py` para funções serverless na Vercel e em `app/main.py` para execução local, com contratos validados por Pydantic.
-* **Autenticação:** Baseada em credenciais institucionais gerenciadas pela administração da escola (`POST /api/auth/login`), com senhas armazenadas via hash **Argon2** (`pwdlib`) e sessão stateless via **JWT** (`HS256`).
+* **Autenticação:** Padronizada em **Google OAuth2** (`POST /api/auth/google`), validando o `id_token` criptograficamente com `google-auth` (incluindo restrição opcional de domínio `ALLOWED_DOMAIN`) e vinculando o e-mail institucional a um perfil previamente cadastrado e ativo no banco. Para desenvolvimento e testes automatizados, o login local por senha pode ser habilitado via `AUTH_DEV_LOGIN=true`.
 * **Proteção de Dados e LGPD (Dados de Menores):**
   * **Princípio do menor privilégio no servidor:** Todas as listagens, contagens do painel e buscas filtram diretamente no SQL via `app/policies.py`. Ocultar elementos na interface é apenas conveniência visual.
   * **Preservação de histórico e exclusão lógica:** Transferências de turma encerram a matrícula anterior (`ended_at`) e abrem uma nova, mantendo os registros pedagógicos vinculados à turma em que ocorreram (`PedagogicalRecord.class_id`). Remoções de registros e comunicados utilizam `deleted_at` (soft delete).

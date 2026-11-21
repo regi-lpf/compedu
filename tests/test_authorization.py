@@ -222,7 +222,6 @@ def test_audit_access(client, world):
 # ---------- Usuários e vínculos ----------
 def test_user_management(client, world):
     resp = client.post("/api/admin/users", json={"name": "Nova Prof", "email": "Nova@Example.com", "role": "teacher",
-                                                 "password": "SenhaNovaProf123!",
                                                  "class_ids": [str(world.classes["B"])]}, headers=world.h("admin"))
     assert resp.status_code == 201, resp.text
     user = resp.json()
