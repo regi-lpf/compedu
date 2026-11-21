@@ -3,7 +3,6 @@ import uuid
 from alembic import command
 
 from app import security
-from app.config import settings
 from app.migrate import alembic_config
 
 
@@ -22,48 +21,11 @@ def test_invalid_missing_or_inactive_token(client, world):
     assert client.get("/api/auth/me", headers=world.h("t1")).status_code == 401
 
 
-def test_dev_login(client, world, monkeypatch):
+def test_password_login(client, world):
     ok = client.post("/api/auth/login", json={"email": "admin@example.com", "password": "SenhaTeste12345"})
     assert ok.status_code == 200 and ok.json()["access_token"]
     assert client.post("/api/auth/login", json={"email": "admin@example.com", "password": "errada"}).status_code == 401
-    # Conta sem senha (apenas Google) não entra por senha.
     assert client.post("/api/auth/login", json={"email": "t1@example.com", "password": "qualquer"}).status_code == 401
-    monkeypatch.setattr(settings, "auth_dev_login", False)
-    assert client.post("/api/auth/login", json={"email": "admin@example.com",
-                                                "password": "SenhaTeste12345"}).status_code == 404
-
-
-def test_auth_config(client):
-    cfg = client.get("/api/auth/config").json()
-    assert cfg["google_client_id"] == "test-client-id" and cfg["dev_login_enabled"] is True
-
-
-def test_google_login_maps_to_registered_profile(client, world, monkeypatch):
-    def fake_verify(credential):
-        if credential == "token-invalido-xx":
-            raise security.GoogleTokenError("Token do Google inválido")
-        return {"email": credential.removeprefix("ok:"), "email_verified": True}
-
-    monkeypatch.setattr("app.routers.auth.verify_google_credential", fake_verify)
-    ok = client.post("/api/auth/google", json={"credential": "ok:T1@example.com"})
-    assert ok.status_code == 200
-    me = client.get("/api/auth/me", headers={"Authorization": f"Bearer {ok.json()['access_token']}"}).json()
-    assert me["email"] == "t1@example.com"
-    assert client.post("/api/auth/google", json={"credential": "ok:intruso@gmail.com"}).status_code == 403
-    assert client.post("/api/auth/google", json={"credential": "token-invalido-xx"}).status_code == 401
-
-
-def test_google_verifier_enforces_domain(monkeypatch):
-    import google.oauth2.id_token as id_token
-
-    monkeypatch.setattr(id_token, "verify_oauth2_token",
-                        lambda *a, **k: {"email": "x@gmail.com", "email_verified": True, "hd": None})
-    monkeypatch.setattr(settings, "allowed_domain", "escola.edu.br")
-    try:
-        security.verify_google_credential("abc")
-        raise AssertionError("deveria rejeitar domínio")
-    except security.GoogleTokenError as exc:
-        assert "institucional" in str(exc)
 
 
 def test_production_settings_validation():

@@ -122,7 +122,7 @@ function canWriteRecords() {
   return currentUser && ["admin", "coordination", "teacher"].includes(currentUser.role);
 }
 function canWriteAnnouncements() {
-  return currentUser && ["admin", "coordination", "secretary"].includes(currentUser.role);
+  return Boolean(currentUser);
 }
 function canViewClassesAndStudents() {
   return currentUser && ["admin", "coordination", "teacher", "secretary"].includes(currentUser.role);
@@ -145,68 +145,6 @@ async function setupLoginScreen() {
   document.getElementById("login-screen").classList.remove("hidden");
   document.getElementById("app-shell").classList.add("hidden");
   document.getElementById("profile-popover").classList.add("hidden");
-
-  try {
-    const cfg = await api.getAuthConfig();
-    const devForm = document.getElementById("dev-login-form");
-    const googleSec = document.getElementById("google-login-section");
-
-    devForm.classList.toggle("hidden", !cfg.dev_login_enabled);
-
-    if (cfg.google_client_id) {
-      googleSec.classList.remove("hidden");
-      if (cfg.allowed_domain) {
-        document.getElementById("google-domain-hint").textContent =
-          `Use seu e-mail institucional @${cfg.allowed_domain}`;
-      }
-      loadGoogleIdentityScript(cfg.google_client_id);
-    } else {
-      googleSec.classList.add("hidden");
-    }
-  } catch (err) {
-    document.getElementById("dev-login-form").classList.remove("hidden");
-  }
-}
-
-function loadGoogleIdentityScript(clientId) {
-  if (window.google?.accounts?.id) {
-    renderGoogleButton(clientId);
-    return;
-  }
-  const existing = document.getElementById("gsi-client-script");
-  if (existing) return;
-  const script = document.createElement("script");
-  script.id = "gsi-client-script";
-  script.src = "https://accounts.google.com/gsi/client";
-  script.async = true;
-  script.defer = true;
-  script.onload = () => renderGoogleButton(clientId);
-  document.head.appendChild(script);
-}
-
-function renderGoogleButton(clientId) {
-  if (!window.google?.accounts?.id) return;
-  window.google.accounts.id.initialize({
-    client_id: clientId,
-    callback: async (response) => {
-      hideLoginError();
-      try {
-        const res = await api.loginGoogle(response.credential);
-        api.setToken(res.access_token);
-        await enterAuthenticatedApp();
-      } catch (err) {
-        showLoginError(err.message);
-      }
-    }
-  });
-  const container = document.getElementById("google-button-container");
-  container.innerHTML = "";
-  window.google.accounts.id.renderButton(container, {
-    theme: "outline",
-    size: "large",
-    width: 340,
-    text: "signin_with"
-  });
 }
 
 function showLoginError(msg) {

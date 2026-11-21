@@ -5,8 +5,6 @@ from pathlib import Path
 _TMP = Path(tempfile.mkdtemp(prefix="compedu-test-"))
 os.environ["ENVIRONMENT"] = "test"
 os.environ["DATABASE_URL"] = f"sqlite:///{_TMP / 'test.db'}"
-os.environ["AUTH_DEV_LOGIN"] = "true"
-os.environ["GOOGLE_CLIENT_ID"] = "test-client-id"
 
 from dataclasses import dataclass, field  # noqa: E402
 from datetime import date  # noqa: E402

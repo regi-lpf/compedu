@@ -1,6 +1,6 @@
 # CompEdu — Arquitetura, Decisões de Produto e Diagramas UML
 
-Este documento consolida as diretrizes arquiteturais, o modelo de segurança, a matriz de acessos e os diagramas estruturais definitivos do sistema **CompEdu**. O conteúdo descreve a aplicação voltada para o ambiente de ensino básico, considerando o deploy em infraestrutura moderna (Vercel) e autenticação federada.
+Este documento consolida as diretrizes arquiteturais, o modelo de segurança, a matriz de acessos e os diagramas estruturais definitivos do sistema **CompEdu**. O conteúdo descreve a aplicação voltada para o ambiente de ensino básico, considerando o deploy na **Vercel** e autenticação própria via JWT.
 
 ---
 
@@ -24,11 +24,11 @@ O controle de segurança da plataforma é híbrido e estruturado em duas dimens�
 
 | Papel (`role`) | Nível Padrão (`level`) | Escopo de Leitura (Vertical: $P \ge U$) | Escopo Horizontal / Restrições de Domínio | Permissões de Escrita / Ações |
 | :--- | :---: | :--- | :--- | :--- |
-| **Administrador** (`admin`) | `1` (Mais alto) | Vê todos os níveis (1 a 5) | Global (sem restrição de turma). | Gestão completa de cadastros, anos letivos, usuários, vínculos, turmas, alunos e auditoria. |
-| **Coordenação / Equipe Pedagógica** (`coordination`) | `2` | Vê níveis 2, 3, 4 e 5 | Global. **Não recebe acesso aos registros pedagógicos de rotina dos professores**, visualizando apenas registros do tipo `follow_up` (acompanhamento/encaminhamento) ou marcados com nível $\le 2$, além dos relatórios consolidados (agregados) de todas as turmas. | Emissão de relatórios consolidados, comunicados gerais, definição da data do conselho de classe e registros de encaminhamento. |
-| **Professor** (`teacher`) | `3` (Padrão) | Vê níveis 3, 4 e 5 | Restrito estritamente aos alunos matriculados nas **próprias turmas vinculadas** no ano letivo ativo (além dos registros de própria autoria). | Criação, edição (própria autoria) e consulta de registros pedagógicos e relatório das suas turmas. |
-| **Secretaria** (`secretary`) | `4` | Vê níveis 4 e 5 | Administrativo / Operacional (**sem acesso a registros pedagógicos** ou relatórios de turma). | Gestão de cadastro de alunos, matrículas/transferências de turma e publicação de comunicados operacionais. |
-| **Suporte** (`support`) | `5` (Mais restrito) | Vê apenas nível 5 | Técnico / Logs gerais (sem acesso a alunos, turmas ou registros pedagógicos). | Consulta da trilha de auditoria técnica (`AuditLog`). |
+| **Administrador** (`admin`) | `1` (Mais alto) | Vê todos os níveis (1 a 5) | Global (sem restrição de turma). | Gestão completa de cadastros, anos letivos, usuários, vínculos, turmas, alunos, mural e auditoria. |
+| **Coordenação / Equipe Pedagógica** (`coordination`) | `2` | Vê níveis 2, 3, 4 e 5 | Global. **Não recebe acesso aos registros pedagógicos de rotina dos professores**, visualizando apenas registros do tipo `follow_up` (acompanhamento/encaminhamento) ou marcados com nível $\le 2$, além dos relatórios consolidados (agregados) de todas as turmas. | Emissão de relatórios consolidados, comunicados no mural (níveis $\ge U$), definição da data do conselho de classe e registros de encaminhamento. |
+| **Professor** (`teacher`) | `3` (Padrão) | Vê níveis 3, 4 e 5 | Restrito estritamente aos alunos matriculados nas **próprias turmas vinculadas** no ano letivo ativo (além dos registros de própria autoria). | Criação, edição (própria autoria) e consulta de registros pedagógicos e relatório das suas turmas; publicação de comunicados no mural (níveis $\ge U$). |
+| **Secretaria** (`secretary`) | `4` | Vê níveis 4 e 5 | Administrativo / Operacional (**sem acesso a registros pedagógicos** ou relatórios de turma). | Gestão de cadastro de alunos, matrículas/transferências de turma e publicação de comunicados no mural (níveis $\ge U$). |
+| **Suporte** (`support`) | `5` (Mais restrito) | Vê apenas nível 5 | Técnico / Logs gerais (sem acesso a alunos, turmas ou registros pedagógicos). | Consulta da trilha de auditoria técnica (`AuditLog`) e publicação de comunicados no mural (nível 5). |
 
 ---
 
@@ -38,11 +38,11 @@ A aplicação utiliza uma arquitetura desacoplada otimizada para o ecossistema S
 
 ```mermaid
 graph TD
-    User([Usuário / Equipe Escolar]) -->|HTTPS / Google OAuth2| Vercel[Frontend Estático HTML/CSS/JS em frontend/]
+    User([Usuário / Equipe Escolar]) -->|HTTPS / Login JWT| Vercel[Frontend Estático HTML/CSS/JS em frontend/]
     Vercel -->|Chamadas REST API /api/*| FastAPI[FastAPI Serverless Function api/index.py]
     
     subgraph FastAPI Backend
-        FastAPI --> Auth[Módulo de Autenticação JWT & Google OAuth2]
+        FastAPI --> Auth[Módulo de Autenticação JWT + Argon2]
         FastAPI --> RBAC[Política Centralizada app/policies.py: Níveis 1-5 & Vínculos]
         Auth --> ORM[SQLAlchemy 2.0 ORM + Alembic]
         RBAC --> ORM
@@ -160,7 +160,7 @@ classDiagram
 
 * **Frontend:** Servido a partir de `frontend/` na **Vercel** (`outputDirectory: "frontend"`), integrando-se via requisições assíncronas encapsuladas em `frontend/api.js`.
 * **Backend:** Desenvolvido em **FastAPI** (Python), exposto em `api/index.py` para funções serverless na Vercel e em `app/main.py` para execução local, com contratos validados por Pydantic.
-* **Autenticação:** Padronizada em **Google OAuth2** (`POST /api/auth/google`), validando o `id_token` criptograficamente com `google-auth` (incluindo restrição opcional de domínio `ALLOWED_DOMAIN`) e vinculando o e-mail institucional a um perfil previamente cadastrado e ativo no banco. Para desenvolvimento e testes automatizados, o login local por senha pode ser habilitado via `AUTH_DEV_LOGIN=true`.
+* **Autenticação:** Baseada em credenciais institucionais gerenciadas pela administração da escola (`POST /api/auth/login`), com senhas armazenadas via hash **Argon2** (`pwdlib`) e sessão stateless via **JWT** (`HS256`).
 * **Proteção de Dados e LGPD (Dados de Menores):**
   * **Princípio do menor privilégio no servidor:** Todas as listagens, contagens do painel e buscas filtram diretamente no SQL via `app/policies.py`. Ocultar elementos na interface é apenas conveniência visual.
   * **Preservação de histórico e exclusão lógica:** Transferências de turma encerram a matrícula anterior (`ended_at`) e abrem uma nova, mantendo os registros pedagógicos vinculados à turma em que ocorreram (`PedagogicalRecord.class_id`). Remoções de registros e comunicados utilizam `deleted_at` (soft delete).

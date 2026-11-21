@@ -7,12 +7,12 @@ Este documento registra as decisões de produto e o estado atual de implementaç
 - Manter o CompEdu simples e focado em dois recursos: **mural interno de comunicados** e **registros pedagógicos**.
 - Construir a experiência a partir das tarefas da equipe escolar, sem expor complexidade de banco de dados, vínculos anuais ou permissões como etapas desnecessárias para o usuário.
 
-## Níveis de acesso (implementado)
+## Níveis de acesso e Mural (implementado)
 
 - O acesso às publicações é numérico, de **1 a 5**; **1 é o nível mais alto**.
 - Uma conta de nível `U` pode visualizar uma publicação de nível `P` quando `P >= U`. Exemplo: nível 2 visualiza publicações dos níveis 2, 3, 4 e 5.
-- O nível controla a faixa de leitura; o papel (`role`) e os vínculos controlam as ações e o escopo horizontal.
-- Ninguém pode criar ou editar uma publicação para um nível mais alto de acesso (`P < U`) do que o seu próprio; a API valida a regra e o seletor na interface exibe apenas os níveis permitidos.
+- **No mural de comunicados, qualquer usuário autenticado pode publicar**, sendo restrito exclusivamente pelo seu nível de acesso (`P >= U`): ninguém pode criar ou editar uma publicação para um nível mais alto (`P < U`) do que o seu próprio.
+- Nos registros pedagógicos e cadastros administrativos, além do nível, o papel (`role`) e os vínculos de turma controlam as ações e o escopo horizontal.
 - O papel, nível da conta e turmas vinculadas no ano ativo ficam visíveis para o próprio usuário no componente de perfil no rodapé da sidebar.
 
 ## Registros pedagógicos e escopo (implementado)
@@ -33,9 +33,7 @@ Este documento registra as decisões de produto e o estado atual de implementaç
 ## Conta e login (implementado)
 
 - Não há tela de conta separada: o rodapé da sidebar exibe nome, papel e nível, e ao clicar abre o popover com e-mail, turmas vinculadas no ano ativo e o botão **Sair da conta**.
-- O perfil CompEdu (papel, nível e vínculos escolares) é gerenciado pela administração e separado da identidade de autenticação.
-- A autenticação principal usa **Google OAuth2** (`POST /api/auth/google`), validando o token do Google Identity Services e exigindo que o e-mail pertença a uma conta cadastrada e ativa no CompEdu (com restrição opcional de domínio institucional `ALLOWED_DOMAIN`).
-- Para desenvolvimento local e testes automatizados, o login por e-mail/senha permanece disponível enquanto `AUTH_DEV_LOGIN=true`.
+- A autenticação é direta por e-mail e senha (`POST /api/auth/login`), com hash Argon2 e token JWT, para contas cadastradas e ativas gerenciadas pela administração da escola (sem dependência de OAuth externo).
 
 ## Evoluções futuras (fora do escopo atual)
 

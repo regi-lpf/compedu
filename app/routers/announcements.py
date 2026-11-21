@@ -8,7 +8,7 @@ from sqlalchemy.orm import joinedload
 from app.audit import audit
 from app.deps import CurrentUser, Db, not_found
 from app.models import Announcement
-from app.policies import ensure_announcement_writer, ensure_can_manage_announcement, ensure_publish_level
+from app.policies import ensure_can_manage_announcement, ensure_publish_level
 from app.schemas import AnnouncementCreate, AnnouncementRead, AnnouncementUpdate
 from app.serializers import announcement_read
 
@@ -36,7 +36,6 @@ def list_announcements(db: Db, user: CurrentUser, limit: int = Query(default=100
 
 @router.post("", response_model=AnnouncementRead, status_code=201)
 def create_announcement(payload: AnnouncementCreate, db: Db, user: CurrentUser):
-    ensure_announcement_writer(user)
     ensure_publish_level(user, payload.access_level)
     item = Announcement(**payload.model_dump(), author_id=user.id)
     db.add(item)

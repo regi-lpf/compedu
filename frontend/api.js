@@ -60,14 +60,9 @@ const api = {
   getToken,
   setToken,
   getHealth: () => apiRequest("/health"),
-  getAuthConfig: () => apiRequest("/auth/config"),
   login: (email, password) => apiRequest("/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password })
-  }),
-  loginGoogle: (credential) => apiRequest("/auth/google", {
-    method: "POST",
-    body: JSON.stringify({ credential })
   }),
   getMe: () => apiRequest("/auth/me"),
 

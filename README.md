@@ -10,7 +10,7 @@ A arquitetura detalhada, matriz de permissões e diagramas UML estão em [docs/a
 - `migrations/` — Migrações de banco de dados gerenciadas pelo Alembic.
 - `frontend/` — Aplicação SPA estática (HTML, CSS e JS puro) integrada à API.
 - `api/index.py` e `vercel.json` — Entrypoint Serverless e configuração de roteamento para deploy na Vercel.
-- `tests/` — Suíte de testes automatizados (pytest) cobrindo a matriz de autorização, autenticação Google/local, matrículas e migrações.
+- `tests/` — Suíte de testes automatizados (pytest) cobrindo a matriz de autorização, autenticação JWT, matrículas e migrações.
 - `docs/` — Documentação arquitetural, decisões de produto e mockups originais (`docs/mockups/`).
 
 ## Executando localmente
@@ -44,7 +44,7 @@ Acesse:
 
 ### Contas fictícias criadas por `python -m app.seed_demo`
 
-Todos os dados gerados pelo seed são exclusivamente fictícios. Na tela de login local (`AUTH_DEV_LOGIN=true`), você também pode clicar nos atalhos de demonstração:
+Todos os dados gerados pelo seed são exclusivamente fictícios. Na tela de login, você também pode clicar nos atalhos de demonstração:
 
 | Papel | Nível | E-mail | Senha |
 | :--- | :---: | :--- | :--- |
@@ -77,9 +77,6 @@ pytest
    - `ENVIRONMENT=prod`
    - `DATABASE_URL=postgresql://...` (a aplicação normaliza automaticamente para `postgresql+psycopg://` e usa `NullPool` em ambiente serverless)
    - `SECRET_KEY=<segredo aleatório com pelo menos 32 caracteres>`
-   - `GOOGLE_CLIENT_ID=<Client ID OAuth 2.0 Web do Google Cloud Console>`
-   - `ALLOWED_DOMAIN=<opcional, ex.: escola.edu.br>`
-   - `AUTH_DEV_LOGIN=false`
 3. Aplique as migrações no banco de produção e cadastre o administrador inicial:
    ```bash
    DATABASE_URL="postgresql://..." python -m app.migrate

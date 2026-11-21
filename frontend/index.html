@@ -18,17 +18,11 @@
         </div>
       </div>
 
-      <p class="login-intro">Entre com sua conta institucional autorizada pela escola.</p>
+      <p class="login-intro">Entre com seu e-mail e senha cadastrados pela administração escolar.</p>
 
       <div id="login-error" class="alert-box error hidden" role="alert"></div>
 
-      <div id="google-login-section" class="google-login-section hidden">
-        <div id="google-button-container"></div>
-        <small id="google-domain-hint" class="muted-hint"></small>
-      </div>
-
-      <form id="dev-login-form" class="hidden">
-        <div class="divider-label" id="dev-login-divider"><span>Acesso local / demonstração</span></div>
+      <form id="dev-login-form">
         <label>
           <span>E-mail institucional</span>
           <input id="login-email" type="email" required autocomplete="username" placeholder="prof@example.com">
@@ -387,7 +381,7 @@
             <h3>Novo profissional</h3>
             <form id="user-form">
               <label><span>Nome completo</span><input id="user-form-name" required></label>
-              <label><span>E-mail institucional (usado no login Google)</span><input id="user-form-email" type="email" required></label>
+              <label><span>E-mail institucional</span><input id="user-form-email" type="email" required></label>
               <label>
                 <span>Papel institucional</span>
                 <select id="user-form-role" required>
@@ -413,8 +407,8 @@
                 <select id="user-form-classes" multiple size="4"></select>
               </label>
               <label>
-                <span>Senha local opcional (mín. 12 caracteres; deixe em branco para usar só Google)</span>
-                <input id="user-form-password" type="password" minlength="12" placeholder="Opcional">
+                <span>Senha inicial (mín. 12 caracteres)</span>
+                <input id="user-form-password" type="password" minlength="12" required placeholder="Mínimo 12 caracteres">
               </label>
               <button class="btn primary" type="submit">Cadastrar profissional</button>
             </form>

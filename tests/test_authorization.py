@@ -174,17 +174,22 @@ def test_class_report(client, world):
 
 
 # ---------- Mural ----------
-def test_announcement_levels_and_writers(client, world):
+def test_announcement_levels_and_any_role_can_publish_within_own_level(client, world):
     titles = lambda who: {a["title"] for a in client.get("/api/announcements", headers=world.h(who)).json()}  # noqa: E731
     assert titles("admin") == {"L1", "L2", "L3", "L5"}
     assert titles("coord") == {"L2", "L3", "L5"}
     assert titles("t1") == {"L3", "L5"}
     assert titles("support") == {"L5"}
     body = {"title": "Novo", "content": "x", "access_level": 3}
-    assert client.post("/api/announcements", json=body, headers=world.h("t1")).status_code == 403
+    # Qualquer usuário autenticado pode publicar no mural, respeitando apenas o próprio nível (P >= U).
+    assert client.post("/api/announcements", json=body, headers=world.h("t1")).status_code == 201
+    assert client.post("/api/announcements", json={**body, "access_level": 2},
+                       headers=world.h("t1")).status_code == 403  # nível 3 não publica em nível 2
     assert client.post("/api/announcements", json=body, headers=world.h("secre")).status_code == 403  # nível 4 < 3
     assert client.post("/api/announcements", json={**body, "access_level": 4},
                        headers=world.h("secre")).status_code == 201
+    assert client.post("/api/announcements", json={**body, "access_level": 5},
+                       headers=world.h("support")).status_code == 201
 
 
 def test_announcement_edit_delete(client, world):
@@ -217,6 +222,7 @@ def test_audit_access(client, world):
 # ---------- Usuários e vínculos ----------
 def test_user_management(client, world):
     resp = client.post("/api/admin/users", json={"name": "Nova Prof", "email": "Nova@Example.com", "role": "teacher",
+                                                 "password": "SenhaNovaProf123!",
                                                  "class_ids": [str(world.classes["B"])]}, headers=world.h("admin"))
     assert resp.status_code == 201, resp.text
     user = resp.json()

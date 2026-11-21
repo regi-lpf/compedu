@@ -25,7 +25,6 @@ from fastapi import HTTPException, status
 
 PEDAGOGICAL_READERS = {Role.admin, Role.coordination, Role.teacher}
 RECORD_WRITERS = {Role.admin, Role.coordination, Role.teacher}
-ANNOUNCEMENT_WRITERS = {Role.admin, Role.coordination, Role.secretary}
 SCHOOL_DATA_READERS = {Role.admin, Role.coordination, Role.secretary}  # visão global de turmas/alunos
 REPORT_GLOBAL = {Role.admin, Role.coordination}
 COUNCIL_EDITORS = {Role.admin, Role.coordination}
@@ -125,11 +124,6 @@ def ensure_can_edit_record(user: User, record: PedagogicalRecord) -> None:
 def ensure_can_delete_record(user: User, record: PedagogicalRecord) -> None:
     if record.author_id != user.id and user.role != Role.admin:
         raise forbidden("Somente o autor ou a administração pode remover o registro")
-
-
-def ensure_announcement_writer(user: User) -> None:
-    if user.role not in ANNOUNCEMENT_WRITERS:
-        raise forbidden("Seu perfil não pode publicar comunicados")
 
 
 def ensure_can_manage_announcement(user: User, author_id) -> None:

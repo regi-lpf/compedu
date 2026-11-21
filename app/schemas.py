@@ -16,19 +16,9 @@ class LoginRequest(BaseModel):
     password: str
 
 
-class GoogleLoginRequest(BaseModel):
-    credential: str = Field(min_length=10)
-
-
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
-
-
-class AuthConfig(BaseModel):
-    google_client_id: str
-    dev_login_enabled: bool
-    allowed_domain: str
 
 
 class ClassRef(ORM):
@@ -52,7 +42,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     role: Role
     access_level: int | None = Field(default=None, ge=1, le=5)
-    password: str | None = Field(default=None, min_length=12, max_length=128)
+    password: str = Field(min_length=12, max_length=128)
     class_ids: list[uuid.UUID] = Field(default_factory=list)
 
 
