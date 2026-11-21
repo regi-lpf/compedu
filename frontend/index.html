@@ -7,78 +7,145 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app">
+  <!-- TELA DE LOGIN -->
+  <div class="login-screen" id="login-screen">
+    <div class="login-card">
+      <div class="brand login-brand">
+        <div class="brand-mark">C</div>
+        <div>
+          <strong>CompEdu</strong>
+          <span>Acompanhamento escolar e mural interno</span>
+        </div>
+      </div>
+
+      <p class="login-intro">Entre com sua conta institucional autorizada pela escola.</p>
+
+      <div id="login-error" class="alert-box error hidden" role="alert"></div>
+
+      <div id="google-login-section" class="google-login-section hidden">
+        <div id="google-button-container"></div>
+        <small id="google-domain-hint" class="muted-hint"></small>
+      </div>
+
+      <form id="dev-login-form" class="hidden">
+        <div class="divider-label" id="dev-login-divider"><span>Acesso local / demonstração</span></div>
+        <label>
+          <span>E-mail institucional</span>
+          <input id="login-email" type="email" required autocomplete="username" placeholder="prof@example.com">
+        </label>
+        <label>
+          <span>Senha</span>
+          <input id="login-password" type="password" required autocomplete="current-password" placeholder="••••••••••••">
+        </label>
+        <button class="btn primary full-width" type="submit" id="login-submit-btn">Entrar</button>
+
+        <div class="demo-accounts">
+          <span>Contas fictícias de demonstração (clique para preencher):</span>
+          <div class="demo-chips">
+            <button type="button" class="chip" data-demo-email="admin@example.com" data-demo-pw="DemoAdmin2026!">Admin (Nível 1)</button>
+            <button type="button" class="chip" data-demo-email="coord@example.com" data-demo-pw="DemoCoord2026!">Coordenação (Nível 2)</button>
+            <button type="button" class="chip" data-demo-email="prof@example.com" data-demo-pw="DemoProf2026!">Professora A (Nível 3)</button>
+            <button type="button" class="chip" data-demo-email="prof2@example.com" data-demo-pw="DemoProf2026!">Professor B (Nível 3)</button>
+            <button type="button" class="chip" data-demo-email="secretaria@example.com" data-demo-pw="DemoSecre2026!">Secretaria (Nível 4)</button>
+            <button type="button" class="chip" data-demo-email="suporte@example.com" data-demo-pw="DemoSuporte2026!">Suporte (Nível 5)</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- APLICAÇÃO PRINCIPAL -->
+  <div class="app hidden" id="app-shell">
     <aside class="sidebar">
       <div class="brand">
         <div class="brand-mark">C</div>
         <div>
           <strong>CompEdu</strong>
-          <span>Acompanhamento escolar</span>
+          <span id="sidebar-year-label">Acompanhamento escolar</span>
         </div>
       </div>
 
       <nav>
-        <button class="nav-item active" data-view="comunicados">
+        <button class="nav-item active" data-view="comunicados" id="nav-comunicados">
           <span class="nav-icon">▤</span><span>Mural</span>
         </button>
-        <button class="nav-item" data-view="inicio">
+        <button class="nav-item" data-view="inicio" id="nav-inicio">
           <span class="nav-icon">⌂</span><span>Painel</span>
         </button>
-        <button class="nav-item" data-view="registros">
+        <button class="nav-item" data-view="registros" id="nav-registros">
           <span class="nav-icon">☷</span><span>Registros</span>
         </button>
-        <button class="nav-item" data-view="turmas">
+        <button class="nav-item" data-view="turmas" id="nav-turmas">
           <span class="nav-icon">▦</span><span>Turmas</span>
         </button>
-      
-        <button class="nav-item" data-view="administracao">
-          <span class="nav-icon">⚙</span><span>Admin</span>
+        <button class="nav-item" data-view="administracao" id="nav-administracao">
+          <span class="nav-icon">⚙</span><span>Cadastros</span>
+        </button>
+        <button class="nav-item hidden" data-view="auditoria" id="nav-auditoria">
+          <span class="nav-icon">⛨</span><span>Auditoria</span>
         </button>
       </nav>
 
-      <div class="sidebar-note">
-        <span>Protótipo</span>
-        <strong>Fluxo v2</strong>
-      </div>
-
-      <div class="user">
-        <div class="avatar">WT</div>
-        <div>
-          <strong>William Torres</strong>
-          <span>Professor · Escola JB</span>
+      <!-- Componente de perfil no rodapé da sidebar (sem tela separada de conta) -->
+      <div class="sidebar-profile" id="sidebar-profile">
+        <div class="profile-popover hidden" id="profile-popover">
+          <div class="profile-detail-block">
+            <span class="profile-label">E-mail</span>
+            <strong id="profile-email">—</strong>
+          </div>
+          <div class="profile-detail-block">
+            <span class="profile-label">Papel e nível de acesso</span>
+            <strong id="profile-role-level">—</strong>
+          </div>
+          <div class="profile-detail-block" id="profile-classes-block">
+            <span class="profile-label">Turmas vinculadas no ano ativo</span>
+            <strong id="profile-classes">—</strong>
+          </div>
+          <button class="btn secondary full-width" type="button" id="logout-btn">Sair da conta</button>
         </div>
+
+        <button class="user-trigger" type="button" id="profile-toggle" aria-expanded="false">
+          <div class="avatar" id="user-avatar">--</div>
+          <div class="user-summary">
+            <strong id="user-name">Carregando...</strong>
+            <span id="user-role-badge">—</span>
+          </div>
+          <span class="profile-chevron">▴</span>
+        </button>
       </div>
     </aside>
 
     <main class="content">
       <header class="topbar">
         <div>
-          <div class="breadcrumb" id="breadcrumb">Comunicados</div>
+          <div class="breadcrumb" id="breadcrumb">Mural</div>
           <h1 id="page-title">Mural interno</h1>
           <p id="page-description">Informações compartilhadas com as equipes da escola.</p>
         </div>
         <div class="topbar-actions">
-          <button class="btn primary" id="new-announcement">+ Novo comunicado</button>
+          <button class="btn primary hidden" id="new-announcement">+ Novo comunicado</button>
           <button class="btn primary hidden" id="new-record">+ Novo registro</button>
         </div>
       </header>
 
-      <!-- INÍCIO -->
+      <div id="global-feedback" class="alert-box hidden" role="status"></div>
+
+      <!-- INÍCIO / PAINEL -->
       <section class="view" id="inicio">
         <div class="overview-grid">
           <article class="panel overview-card">
-            <div class="section-label">Visão geral</div>
+            <div class="section-label">Visão geral (<span id="overview-year-label">ano ativo</span>)</div>
             <div class="overview-stats">
               <div>
-                <strong>128</strong>
-                <span>alunos</span>
+                <strong id="stat-students">0</strong>
+                <span>alunos no seu escopo</span>
               </div>
               <div>
-                <strong>6</strong>
+                <strong id="stat-classes">0</strong>
                 <span>turmas</span>
               </div>
               <div>
-                <strong>37</strong>
+                <strong id="stat-records-month">0</strong>
                 <span>registros no mês</span>
               </div>
             </div>
@@ -88,23 +155,23 @@
             <div class="panel-title-row">
               <div>
                 <div class="section-label">Próximo conselho de classe</div>
-                <h2 id="council-date-label">12 de setembro de 2026</h2>
+                <h2 id="council-date-label">Data não definida</h2>
               </div>
               <div class="calendar-icon">▣</div>
             </div>
-            <div class="council-actions">
-              <input type="date" id="council-date" value="2026-09-12">
-              <button class="btn secondary" id="save-council-date">Salvar data</button>
+            <div class="council-actions hidden" id="council-actions">
+              <input type="date" id="council-date">
+              <button class="btn secondary" id="save-council-date" type="button">Salvar data</button>
             </div>
           </article>
         </div>
 
-        <div class="home-grid">
+        <div class="home-grid" id="home-pedagogical-grid">
           <section class="panel">
             <div class="panel-head">
               <div>
                 <h2>Registros recentes</h2>
-                <p>Últimas observações adicionadas pelos professores.</p>
+                <p>Últimas observações visíveis para o seu perfil e nível.</p>
               </div>
               <button class="link-btn" data-go="registros">Ver todos</button>
             </div>
@@ -115,7 +182,7 @@
             <div class="panel-head">
               <div>
                 <h2>Alunos para acompanhar</h2>
-                <p>Alunos com maior recorrência de registros de atenção.</p>
+                <p>Alunos com maior recorrência de registros de atenção no seu escopo.</p>
               </div>
             </div>
             <div id="watch-students"></div>
@@ -128,7 +195,7 @@
         <div id="classes-home">
           <div class="section-intro">
             <h2>Turmas</h2>
-            <p>Entre em uma turma para acessar seus alunos e gerar um relatório.</p>
+            <p>Entre em uma turma para acessar seus alunos, histórico e relatório consolidado.</p>
           </div>
           <div class="class-grid" id="class-grid"></div>
         </div>
@@ -139,19 +206,19 @@
           <div class="panel class-hero">
             <div>
               <div class="section-label">Turma selecionada</div>
-              <h2 id="class-title">2º A</h2>
-              <p id="class-subtitle">27 alunos · Ensino Médio</p>
+              <h2 id="class-title">—</h2>
+              <p id="class-subtitle">—</p>
             </div>
-            <button class="btn primary" id="class-report">Gerar relatório da turma</button>
+            <button class="btn primary hidden" id="class-report">Gerar relatório da turma</button>
           </div>
 
           <section class="panel">
             <div class="panel-head">
               <div>
                 <h2>Lista de alunos</h2>
-                <p>Clique em um aluno para visualizar seus registros.</p>
+                <p>Clique em um aluno para visualizar o histórico de matrículas e registros.</p>
               </div>
-              <input class="search" id="class-student-search" placeholder="Buscar aluno...">
+              <input class="search" id="class-student-search" placeholder="Buscar por nome ou identificador...">
             </div>
             <div class="student-list" id="class-student-list"></div>
           </section>
@@ -162,21 +229,34 @@
 
           <div class="panel student-hero">
             <div class="student-main">
-              <div class="student-avatar" id="student-avatar">AS</div>
+              <div class="student-avatar" id="student-avatar">--</div>
               <div>
-                <div class="section-label">Aluno</div>
-                <h2 id="student-name">Ana Souza</h2>
-                <p id="student-class">2º A</p>
+                <div class="section-label">Aluno · <span id="student-identifier">—</span></div>
+                <h2 id="student-name">—</h2>
+                <p id="student-class">—</p>
               </div>
             </div>
-            <button class="btn secondary" id="student-new-record">+ Registrar observação</button>
+            <div class="topbar-actions">
+              <button class="btn secondary hidden" id="student-transfer-btn">Trocar de turma</button>
+              <button class="btn primary hidden" id="student-new-record">+ Registrar observação</button>
+            </div>
           </div>
 
-          <section class="panel">
+          <section class="panel enrollment-history-panel">
             <div class="panel-head">
               <div>
-                <h2>Registros do aluno</h2>
-                <p>Histórico pedagógico organizado em ordem cronológica.</p>
+                <h2>Vínculos e matrículas por ano letivo</h2>
+                <p>Trocas de turma preservam os vínculos e registros históricos.</p>
+              </div>
+            </div>
+            <div id="student-enrollments" class="enrollment-badges"></div>
+          </section>
+
+          <section class="panel" id="student-records-panel">
+            <div class="panel-head">
+              <div>
+                <h2>Registros pedagógicos do aluno</h2>
+                <p>Histórico organizado em ordem cronológica (filtrado pelo seu nível e escopo).</p>
               </div>
             </div>
             <div class="record-list" id="student-records"></div>
@@ -190,7 +270,7 @@
           <div class="panel-head records-head">
             <div>
               <h2>Lista de registros</h2>
-              <p>Use os filtros para encontrar rapidamente o que precisa.</p>
+              <p>Use os filtros para encontrar rapidamente o que precisa dentro do seu escopo de acesso.</p>
             </div>
           </div>
 
@@ -206,9 +286,9 @@
               <span>Tipo de registro</span>
               <select id="filter-type">
                 <option value="all">Todos os tipos</option>
-                <option value="Positivo">Positivo</option>
-                <option value="Atenção">Atenção</option>
-                <option value="Acompanhamento">Acompanhamento</option>
+                <option value="positive">Positivo</option>
+                <option value="attention">Atenção</option>
+                <option value="follow_up">Acompanhamento / encaminhamento</option>
               </select>
             </label>
 
@@ -219,7 +299,7 @@
               </select>
             </label>
 
-            <button class="clear-btn" id="clear-filters">Limpar filtros</button>
+            <button class="clear-btn" id="clear-filters" type="button">Limpar filtros</button>
           </div>
 
           <div class="results-info">
@@ -237,93 +317,186 @@
           <div class="panel-head">
             <div>
               <h2>Mural interno</h2>
-              <p>Comunicados destinados às equipes da escola.</p>
+              <p>Comunicados destinados às equipes da escola (visíveis conforme o nível da sua conta).</p>
             </div>
           </div>
           <div class="announcement-list" id="announcement-list"></div>
         </section>
       </section>
 
-      <!-- ADMINISTRACAO -->
+      <!-- ADMINISTRAÇÃO / CADASTROS -->
       <section class="view" id="administracao">
         <div class="section-intro">
           <h2>Cadastros da escola</h2>
-          <p>Organize profissionais, turmas e estudantes em um só lugar.</p>
+          <p>Organize anos letivos, turmas, estudantes, matrículas e profissionais.</p>
         </div>
         <div class="admin-tabs" role="tablist" aria-label="Cadastros da escola">
-          <button class="admin-tab active" type="button" role="tab" aria-selected="true" data-admin-tab="professores">Professores</button>
-          <button class="admin-tab" type="button" role="tab" aria-selected="false" data-admin-tab="turmas">Turmas</button>
-          <button class="admin-tab" type="button" role="tab" aria-selected="false" data-admin-tab="alunos">Alunos</button>
-          <button class="admin-tab" type="button" role="tab" aria-selected="false" data-admin-tab="equipe">Equipe pedagógica</button>
+          <button class="admin-tab active" type="button" role="tab" aria-selected="true" data-admin-tab="alunos" id="tab-btn-alunos">Alunos e matrículas</button>
+          <button class="admin-tab" type="button" role="tab" aria-selected="false" data-admin-tab="profissionais" id="tab-btn-profissionais">Profissionais e vínculos</button>
+          <button class="admin-tab" type="button" role="tab" aria-selected="false" data-admin-tab="turmas" id="tab-btn-turmas">Turmas</button>
+          <button class="admin-tab" type="button" role="tab" aria-selected="false" data-admin-tab="anos" id="tab-btn-anos">Anos letivos</button>
         </div>
 
-        <section class="admin-panel active" role="tabpanel" id="admin-professores">
+        <!-- ABA ALUNOS E MATRÍCULAS (admin + secretaria) -->
+        <section class="admin-panel" role="tabpanel" id="admin-alunos">
           <div class="admin-form-column">
-            <h3>Novo professor</h3>
-            <form id="teacher-form">
-              <label><span>Nome completo</span><input id="teacher-name" required></label>
-              <label><span>E-mail institucional</span><input id="teacher-email" type="email" required></label>
-              <label><span>Turmas vinculadas</span><select id="teacher-classes" multiple size="4"></select></label>
-              <button class="btn primary" type="submit">Cadastrar professor</button>
+            <h3>Adicionar ou transferir aluno em turma</h3>
+            <form id="student-form">
+              <label>
+                <span>Operação</span>
+                <select id="student-mode">
+                  <option value="new">Criar aluno novo e já vincular à turma</option>
+                  <option value="existing">Vincular ou trocar turma de aluno já cadastrado</option>
+                </select>
+              </label>
+
+              <div id="student-new-fields">
+                <label>
+                  <span>Nome completo do aluno</span>
+                  <input id="admin-student-name" placeholder="Ex.: Maria Oliveira">
+                </label>
+                <label>
+                  <span>Identificador escolar (matrícula / RA — distingue homônimos)</span>
+                  <input id="admin-student-identifier" placeholder="Ex.: 2026-0142">
+                </label>
+              </div>
+
+              <div id="student-existing-fields" class="hidden">
+                <label>
+                  <span>Aluno cadastrado</span>
+                  <select id="admin-existing-student"></select>
+                </label>
+              </div>
+
+              <label>
+                <span>Turma de destino (ano ativo)</span>
+                <select id="admin-student-class" required></select>
+              </label>
+              <button class="btn primary" type="submit">Salvar matrícula</button>
             </form>
           </div>
-          <div class="admin-list-column"><h3>Professores cadastrados</h3><div id="teacher-list" class="admin-list"></div></div>
+          <div class="admin-list-column">
+            <h3>Alunos cadastrados</h3>
+            <div id="admin-student-list" class="admin-list"></div>
+          </div>
         </section>
 
+        <!-- ABA PROFISSIONAIS (admin) -->
+        <section class="admin-panel hidden" role="tabpanel" id="admin-profissionais">
+          <div class="admin-form-column">
+            <h3>Novo profissional</h3>
+            <form id="user-form">
+              <label><span>Nome completo</span><input id="user-form-name" required></label>
+              <label><span>E-mail institucional (usado no login Google)</span><input id="user-form-email" type="email" required></label>
+              <label>
+                <span>Papel institucional</span>
+                <select id="user-form-role" required>
+                  <option value="teacher">Professor (padrão nível 3)</option>
+                  <option value="coordination">Coordenação / Equipe pedagógica (padrão nível 2)</option>
+                  <option value="secretary">Secretaria (padrão nível 4)</option>
+                  <option value="support">Suporte técnico (padrão nível 5)</option>
+                  <option value="admin">Administrador (padrão nível 1)</option>
+                </select>
+              </label>
+              <label>
+                <span>Nível de acesso (1 = mais alto, 5 = mais restrito)</span>
+                <select id="user-form-level" required>
+                  <option value="1">Nível 1 — acesso mais alto</option>
+                  <option value="2">Nível 2</option>
+                  <option value="3" selected>Nível 3 — padrão docente</option>
+                  <option value="4">Nível 4</option>
+                  <option value="5">Nível 5 — mais restrito</option>
+                </select>
+              </label>
+              <label>
+                <span>Turmas vinculadas no ano ativo (para professores)</span>
+                <select id="user-form-classes" multiple size="4"></select>
+              </label>
+              <label>
+                <span>Senha local opcional (mín. 12 caracteres; deixe em branco para usar só Google)</span>
+                <input id="user-form-password" type="password" minlength="12" placeholder="Opcional">
+              </label>
+              <button class="btn primary" type="submit">Cadastrar profissional</button>
+            </form>
+          </div>
+          <div class="admin-list-column">
+            <h3>Profissionais cadastrados</h3>
+            <div id="user-list" class="admin-list"></div>
+          </div>
+        </section>
+
+        <!-- ABA TURMAS (admin) -->
         <section class="admin-panel hidden" role="tabpanel" id="admin-turmas">
           <div class="admin-form-column">
-            <h3>Nova turma</h3>
+            <h3>Nova turma no ano ativo</h3>
             <form id="class-form">
-              <label><span>Identificação da turma</span><input id="admin-class-name" required placeholder="Ex.: 4º A"></label>
-              <label><span>Etapa de ensino</span><select id="admin-class-year"><option>Ensino Fundamental I</option><option>Ensino Fundamental II</option><option>Ensino Médio</option></select></label>
+              <label><span>Identificação da turma</span><input id="admin-class-name" required placeholder="Ex.: 2º C"></label>
+              <label>
+                <span>Etapa de ensino</span>
+                <select id="admin-class-year">
+                  <option>Ensino Fundamental I</option>
+                  <option>Ensino Fundamental II</option>
+                  <option selected>Ensino Médio</option>
+                </select>
+              </label>
               <button class="btn primary" type="submit">Cadastrar turma</button>
             </form>
           </div>
-          <div class="admin-list-column"><h3>Turmas cadastradas</h3><div id="admin-class-list" class="admin-list"></div></div>
+          <div class="admin-list-column">
+            <h3>Turmas do ano ativo</h3>
+            <div id="admin-class-list" class="admin-list"></div>
+          </div>
         </section>
 
-        <section class="admin-panel hidden" role="tabpanel" id="admin-alunos">
+        <!-- ABA ANOS LETIVOS (admin) -->
+        <section class="admin-panel hidden" role="tabpanel" id="admin-anos">
           <div class="admin-form-column">
-            <h3>Novo aluno</h3>
-            <form id="student-form">
-              <label><span>Nome completo</span><input id="admin-student-name" required></label>
-              <label><span>Turma</span><select id="admin-student-class" required></select></label>
-              <button class="btn primary" type="submit">Cadastrar aluno</button>
+            <h3>Novo ano letivo</h3>
+            <form id="year-form">
+              <label><span>Rótulo do ano letivo</span><input id="admin-year-label" required placeholder="Ex.: 2027"></label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="admin-year-active">
+                <span>Definir imediatamente como ano letivo ativo</span>
+              </label>
+              <button class="btn primary" type="submit">Criar ano letivo</button>
             </form>
           </div>
-          <div class="admin-list-column"><h3>Alunos cadastrados</h3><div id="admin-student-list" class="admin-list"></div></div>
+          <div class="admin-list-column">
+            <h3>Anos letivos</h3>
+            <div id="admin-year-list" class="admin-list"></div>
+          </div>
         </section>
+      </section>
 
-        <section class="admin-panel hidden" role="tabpanel" id="admin-equipe">
-          <div class="admin-form-column">
-            <h3>Novo membro da equipe</h3>
-            <form id="team-form">
-              <label><span>Nome completo</span><input id="team-name" required></label>
-              <label><span>E-mail institucional</span><input id="team-email" type="email" required></label>
-              <label><span>Área de atuação</span><select id="team-area"><option>Coordenação pedagógica</option><option>Secretaria</option><option>Psicopedagogia</option><option>Orientação educacional</option><option>Outro</option></select></label>
-              <button class="btn primary" type="submit">Cadastrar membro</button>
-            </form>
+      <!-- AUDITORIA (admin + suporte) -->
+      <section class="view" id="auditoria">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Trilha de auditoria técnica</h2>
+              <p>Histórico de operações realizadas no sistema (sem expor conteúdo pedagógico sensível).</p>
+            </div>
           </div>
-          <div class="admin-list-column"><h3>Equipe pedagógica cadastrada</h3><div id="team-list" class="admin-list"></div></div>
+          <div id="audit-list" class="admin-list"></div>
         </section>
-        <p class="admin-notice">Cadastros demonstrativos: os dados não são salvos e não alteram permissões de acesso.</p>
       </section>
     </main>
   </div>
 
-  <!-- MODAL NOVO REGISTRO -->
+  <!-- MODAL NOVO / EDITAR REGISTRO -->
   <div class="modal-layer hidden" id="record-modal">
     <div class="modal">
       <div class="modal-head">
         <div>
-          <h2>Novo registro</h2>
+          <h2 id="record-modal-title">Novo registro</h2>
           <p>Descreva um fato objetivo e relevante para o acompanhamento.</p>
         </div>
-        <button class="close-btn" id="close-record-modal">×</button>
+        <button class="close-btn" id="close-record-modal" type="button">×</button>
       </div>
 
       <form id="record-form">
-        <label>
+        <input type="hidden" id="record-edit-id">
+        <label id="record-student-field">
           <span>Aluno</span>
           <select id="record-student" required></select>
         </label>
@@ -331,21 +504,15 @@
         <label>
           <span>Tipo de registro</span>
           <select id="record-type" required>
-            <option value="Positivo">Positivo</option>
-            <option value="Atenção">Atenção</option>
-            <option value="Acompanhamento">Acompanhamento</option>
+            <option value="positive">Positivo</option>
+            <option value="attention">Atenção</option>
+            <option value="follow_up">Acompanhamento / encaminhamento</option>
           </select>
         </label>
 
         <label>
           <span>Nível de acesso</span>
-          <select id="record-access-level" required>
-            <option value="3">Nível 3 — padrão</option>
-            <option value="1">Nível 1 — acesso mais alto</option>
-            <option value="2">Nível 2</option>
-            <option value="4">Nível 4</option>
-            <option value="5">Nível 5</option>
-          </select>
+          <select id="record-access-level" required></select>
         </label>
 
         <label>
@@ -365,40 +532,30 @@
     </div>
   </div>
 
-  <!-- MODAL NOVO COMUNICADO -->
+  <!-- MODAL NOVO / EDITAR COMUNICADO -->
   <div class="modal-layer hidden" id="announcement-modal">
     <div class="modal">
       <div class="modal-head">
         <div>
-          <h2>Novo comunicado</h2>
-          <p>O nível 1 tem maior acesso. Cada nível vê publicações do próprio nível e dos níveis numericamente maiores.</p>
+          <h2 id="announcement-modal-title">Novo comunicado</h2>
+          <p>O nível 1 é o mais alto. Você pode publicar no seu próprio nível ou em níveis mais amplos.</p>
         </div>
-        <button class="close-btn" id="close-announcement-modal" aria-label="Fechar">×</button>
+        <button class="close-btn" id="close-announcement-modal" type="button" aria-label="Fechar">×</button>
       </div>
       <form id="announcement-form">
+        <input type="hidden" id="announcement-edit-id">
         <label>
           <span>Título</span>
-          <input id="announcement-title" required maxlength="90" placeholder="Ex.: Reunião de planejamento">
+          <input id="announcement-title" required maxlength="180" placeholder="Ex.: Reunião de planejamento">
         </label>
         <label>
           <span>Nível de acesso</span>
-          <select id="announcement-access-level" required>
-            <option value="3">Nível 3 — padrão</option>
-            <option value="1">Nível 1 — acesso mais alto</option>
-            <option value="2">Nível 2</option>
-            <option value="4">Nível 4</option>
-            <option value="5">Nível 5</option>
-          </select>
+          <select id="announcement-access-level" required></select>
         </label>
         <label>
           <span>Mensagem</span>
-          <textarea id="announcement-text" rows="4" required maxlength="800" placeholder="Escreva as informações principais."></textarea>
+          <textarea id="announcement-text" rows="5" required maxlength="10000" placeholder="Escreva as informações principais."></textarea>
         </label>
-        <label>
-          <span>Anexos</span>
-          <input id="announcement-files" type="file" multiple>
-        </label>
-        <div id="attachment-preview" class="attachment-preview" aria-live="polite"></div>
         <div class="modal-actions">
           <button class="btn secondary" type="button" id="cancel-announcement">Cancelar</button>
           <button class="btn primary" type="submit">Publicar comunicado</button>
@@ -407,21 +564,45 @@
     </div>
   </div>
 
-  <!-- MODAL RELATÓRIO -->
+  <!-- MODAL RELATÓRIO DA TURMA -->
   <div class="modal-layer hidden" id="report-modal">
     <div class="modal report-modal">
       <div class="modal-head">
         <div>
-          <div class="section-label">Relatório demonstrativo</div>
+          <div class="section-label">Relatório consolidado</div>
           <h2 id="report-title">Relatório da turma</h2>
         </div>
-        <button class="close-btn" id="close-report-modal">×</button>
+        <button class="close-btn" id="close-report-modal" type="button">×</button>
       </div>
       <div id="report-content"></div>
       <div class="modal-actions">
-        <button class="btn secondary" id="close-report-bottom">Fechar</button>
-        <button class="btn primary" onclick="window.print()">Imprimir / salvar PDF</button>
+        <button class="btn secondary" id="close-report-bottom" type="button">Fechar</button>
+        <button class="btn primary" type="button" onclick="window.print()">Imprimir / salvar PDF</button>
       </div>
+    </div>
+  </div>
+
+  <!-- MODAL VÍNCULOS DO PROFISSIONAL -->
+  <div class="modal-layer hidden" id="assign-modal">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <h2 id="assign-modal-title">Turmas vinculadas</h2>
+          <p>Selecione as turmas do ano letivo ativo atribuídas a este profissional.</p>
+        </div>
+        <button class="close-btn" id="close-assign-modal" type="button">×</button>
+      </div>
+      <form id="assign-form">
+        <input type="hidden" id="assign-user-id">
+        <label>
+          <span>Turmas do ano ativo</span>
+          <select id="assign-classes-select" multiple size="6"></select>
+        </label>
+        <div class="modal-actions">
+          <button class="btn secondary" type="button" id="cancel-assign">Cancelar</button>
+          <button class="btn primary" type="submit">Salvar vínculos</button>
+        </div>
+      </form>
     </div>
   </div>
 
