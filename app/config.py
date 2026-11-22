@@ -37,6 +37,10 @@ class Settings(BaseSettings):
                 raise ValueError("Em produção, use PostgreSQL (DATABASE_URL).")
         return self
 
+    @property
+    def dev_login_enabled(self) -> bool:
+        return self.environment != "prod" and self.auth_dev_login
+
     @cached_property
     def sqlalchemy_url(self) -> str:
         """Normaliza URLs de provedores (Neon/Supabase/Vercel) para o driver psycopg 3."""

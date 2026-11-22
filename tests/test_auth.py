@@ -90,6 +90,17 @@ def test_production_settings_validation():
     assert s.sqlalchemy_url.startswith("postgresql+psycopg://")
 
 
+def test_password_login_is_never_enabled_in_production(client, monkeypatch):
+    monkeypatch.setattr(settings, "environment", "prod")
+    monkeypatch.setattr(settings, "auth_dev_login", True)
+    assert settings.dev_login_enabled is False
+    assert client.get("/api/auth/config").json()["dev_login_enabled"] is False
+    assert client.post("/api/auth/login", json={
+        "email": "admin@example.com",
+        "password": "SenhaTeste12345",
+    }).status_code == 404
+
+
 def test_migrations_match_models(tmp_path):
     cfg = alembic_config()
     cfg.attributes["database_url"] = f"sqlite:///{tmp_path / 'mig.db'}"

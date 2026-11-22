@@ -17,7 +17,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @router.get("/config", response_model=AuthConfig)
 def auth_config():
     """Informa ao frontend quais métodos de login estão habilitados."""
-    return AuthConfig(google_client_id=settings.google_client_id, dev_login_enabled=settings.auth_dev_login,
+    return AuthConfig(google_client_id=settings.google_client_id, dev_login_enabled=settings.dev_login_enabled,
                       allowed_domain=settings.allowed_domain)
 
 
@@ -40,7 +40,7 @@ def login_google(payload: GoogleLoginRequest, db: Db):
 @router.post("/login", response_model=TokenResponse)
 def login_dev(payload: LoginRequest, db: Db):
     """Login por senha — habilitado quando AUTH_DEV_LOGIN=true."""
-    if not settings.auth_dev_login:
+    if not settings.dev_login_enabled:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Login por senha desabilitado")
     user = db.scalar(select(User).where(User.email == str(payload.email).lower()))
     if not user or not user.active or not verify_password(payload.password, user.password_hash):
