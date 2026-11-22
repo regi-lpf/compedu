@@ -152,6 +152,7 @@ async function setupLoginScreen() {
     const googleSec = document.getElementById("google-login-section");
 
     devForm.classList.toggle("hidden", !cfg.dev_login_enabled);
+    document.getElementById("dev-login-divider").classList.toggle("hidden", !cfg.dev_login_enabled);
 
     if (cfg.google_client_id) {
       googleSec.classList.remove("hidden");
@@ -164,7 +165,10 @@ async function setupLoginScreen() {
       googleSec.classList.add("hidden");
     }
   } catch (err) {
-    document.getElementById("dev-login-form").classList.remove("hidden");
+    document.getElementById("dev-login-form").classList.add("hidden");
+    document.getElementById("dev-login-divider").classList.add("hidden");
+    document.getElementById("google-login-section").classList.add("hidden");
+    showLoginError("Não foi possível carregar as opções de login.");
   }
 }
 
