@@ -35,6 +35,7 @@ Este documento registra as decisões de produto e o estado atual de implementaç
 - Não há tela de conta separada: o rodapé da sidebar exibe nome, papel e nível, e ao clicar abre o popover com e-mail, turmas vinculadas no ano ativo e o botão **Sair da conta**.
 - O perfil CompEdu (papel, nível e vínculos escolares) é gerenciado pela administração e separado da identidade de autenticação.
 - A autenticação principal usa **Google OAuth2** (`POST /api/auth/google`), validando o token do Google Identity Services e exigindo que o e-mail pertença a uma conta cadastrada e ativa no CompEdu (com restrição opcional de domínio institucional `ALLOWED_DOMAIN`).
+- O primeiro administrador é criado uma única vez por `python -m app.create_admin`, executado manualmente contra o banco de produção. Depois disso, administradores criam e desativam contas pela interface.
 - Para desenvolvimento local e testes automatizados, o login por e-mail/senha permanece disponível enquanto `AUTH_DEV_LOGIN=true`.
 
 ## Evoluções futuras (fora do escopo atual)

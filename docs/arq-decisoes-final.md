@@ -158,9 +158,9 @@ classDiagram
 
 ## 5. Diretrizes Tecnológicas e LGPD
 
-* **Frontend:** Servido a partir de `frontend/` na **Vercel** (`outputDirectory: "frontend"`), integrando-se via requisições assíncronas encapsuladas em `frontend/api.js`.
+* **Frontend:** Aplicação estática HTML/CSS/JavaScript servida a partir de `frontend/` na **Vercel**, integrando-se via requisições assíncronas encapsuladas em `frontend/api.js`.
 * **Backend:** Desenvolvido em **FastAPI** (Python), exposto em `api/index.py` para funções serverless na Vercel e em `app/main.py` para execução local, com contratos validados por Pydantic.
-* **Autenticação:** Padronizada em **Google OAuth2** (`POST /api/auth/google`), validando o `id_token` criptograficamente com `google-auth` (incluindo restrição opcional de domínio `ALLOWED_DOMAIN`) e vinculando o e-mail institucional a um perfil previamente cadastrado e ativo no banco. Para desenvolvimento e testes automatizados, o login local por senha pode ser habilitado via `AUTH_DEV_LOGIN=true`.
+* **Autenticação:** Padronizada em **Google OAuth2** (`POST /api/auth/google`), validando o `id_token` criptograficamente com `google-auth` e vinculando o e-mail institucional a um perfil previamente cadastrado e ativo no banco. `ALLOWED_DOMAIN` restringe opcionalmente o domínio institucional. O primeiro administrador é criado manualmente com `python -m app.create_admin`; em produção o bootstrap não aceita senha local. Depois, administradores gerenciam contas pela interface. Login local por senha existe apenas para desenvolvimento e testes.
 * **Proteção de Dados e LGPD (Dados de Menores):**
   * **Princípio do menor privilégio no servidor:** Todas as listagens, contagens do painel e buscas filtram diretamente no SQL via `app/policies.py`. Ocultar elementos na interface é apenas conveniência visual.
   * **Preservação de histórico e exclusão lógica:** Transferências de turma encerram a matrícula anterior (`ended_at`) e abrem uma nova, mantendo os registros pedagógicos vinculados à turma em que ocorreram (`PedagogicalRecord.class_id`). Remoções de registros e comunicados utilizam `deleted_at` (soft delete).

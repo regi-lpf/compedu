@@ -1,21 +1,32 @@
 # CompEdu
 
-Aplicação web de apoio à gestão escolar estruturada em torno de dois pilares: **mural interno de comunicados** e **registros pedagógicos**, com controle de acesso híbrido (níveis verticais de 1 a 5 e vínculos horizontais por papel, turma e ano letivo).
+O CompEdu é uma aplicação web para equipes escolares gerirem comunicados internos e registros pedagógicos.
+O controle de acesso combina duas dimensões:
 
-A arquitetura detalhada, matriz de permissões e diagramas UML estão em [docs/arq-decisoes-final.md](docs/arq-decisoes-final.md) e as decisões de produto em [docs/decisoes-produto.md](docs/decisoes-produto.md).
+- **Eixo vertical:** níveis numéricos de 1 a 5, em que 1 é o nível mais alto.
+- **Eixo horizontal:** papel, ano letivo, turma, matrícula e vínculo de ensino.
 
-## Estrutura do projeto
+## Funcionalidades
 
-- `app/` — Backend FastAPI, modelos SQLAlchemy 2.0 (UUID), política centralizada de autorização (`app/policies.py`) e routers REST (`app/routers/`).
-- `migrations/` — Migrações de banco de dados gerenciadas pelo Alembic.
-- `frontend/` — Aplicação SPA estática (HTML, CSS e JS puro) integrada à API.
-- `api/index.py` e `vercel.json` — Entrypoint Serverless e configuração de roteamento para deploy na Vercel.
-- `tests/` — Suíte de testes automatizados (pytest) cobrindo a matriz de autorização, autenticação Google/local, matrículas e migrações.
-- `docs/` — Documentação arquitetural, decisões de produto e mockups originais (`docs/mockups/`).
+- mural interno de comunicados;
+- registros pedagógicos de estudantes;
+- turmas, matrículas e histórico anual;
+- perfis, papéis e níveis da equipe escolar;
+- painel, relatórios e trilha de auditoria.
+
+## Contas e autenticação
+
+Em produção, o acesso usa Google OAuth. Depois que o Google valida o token, o sistema procura um usuário
+CompEdu já cadastrado e ativo. A aplicação não cria contas automaticamente após o login.
+
+O primeiro administrador é criado uma vez, manualmente, no banco de produção. Em seguida, administradores
+gerenciam os demais usuários pela interface, incluindo papel, nível e turmas.
+
+O login por e-mail e senha existe apenas para desenvolvimento e testes. Ele é desativado em produção.
 
 ## Executando localmente
 
-### Linux / macOS
+Linux/macOS:
 
 ```bash
 python3 -m venv .venv
@@ -25,7 +36,7 @@ python -m app.seed_demo
 uvicorn app.main:app --reload
 ```
 
-### Windows (PowerShell)
+Windows PowerShell:
 
 ```powershell
 py -m venv .venv
@@ -35,27 +46,15 @@ python -m app.seed_demo
 uvicorn app.main:app --reload
 ```
 
-Se `DATABASE_URL` não estiver definida, o sistema utiliza SQLite local (`compedu.db`) para desenvolvimento rápido.
+Sem `DATABASE_URL`, o sistema usa SQLite local. O seed cria somente dados fictícios.
 
-Acesse:
-- `http://127.0.0.1:8000` — Aplicação web CompEdu
-- `http://127.0.0.1:8000/docs` — Documentação interativa OpenAPI (Swagger)
-- `http://127.0.0.1:8000/api/health` — Verificação de saúde do serviço
+URLs locais:
 
-### Contas fictícias criadas por `python -m app.seed_demo`
+- `http://127.0.0.1:8000` — aplicação
+- `http://127.0.0.1:8000/docs` — documentação OpenAPI
+- `http://127.0.0.1:8000/api/health` — verificação de saúde
 
-Todos os dados gerados pelo seed são exclusivamente fictícios. Na tela de login, você também pode clicar nos atalhos de demonstração:
-
-| Papel | Nível | E-mail | Senha |
-| :--- | :---: | :--- | :--- |
-| Administração | `1` | `admin@example.com` | `DemoAdmin2026!` |
-| Coordenação | `2` | `coord@example.com` | `DemoCoord2026!` |
-| Professora (2º A e 3º A) | `3` | `prof@example.com` | `DemoProf2026!` |
-| Professor B (2º B) | `3` | `prof2@example.com` | `DemoProf2026!` |
-| Secretaria | `4` | `secretaria@example.com` | `DemoSecre2026!` |
-| Suporte técnico | `5` | `suporte@example.com` | `DemoSuporte2026!` |
-
-### Usando PostgreSQL local via Docker
+Para PostgreSQL local com Docker:
 
 ```bash
 cp .env.example .env
@@ -64,25 +63,71 @@ python -m app.migrate
 python -m app.create_admin
 ```
 
-## Executando os testes
+## Deploy na Vercel
 
-```bash
-pytest
-```
+1. Crie um banco PostgreSQL gerenciado.
+2. Configure um OAuth 2.0 Web Client no Google Cloud para o domínio implantado.
+3. Configure no projeto da Vercel:
 
-## Deploy na Vercel (Frontend Estático + FastAPI Serverless + Postgres)
-
-1. Crie um banco PostgreSQL gerenciado (Neon, Supabase ou Vercel Postgres).
-2. Configure as variáveis de ambiente no projeto da Vercel:
    - `ENVIRONMENT=prod`
-   - `DATABASE_URL=postgresql://...` (a aplicação normaliza automaticamente para `postgresql+psycopg://` e usa `NullPool` em ambiente serverless)
+   - `DATABASE_URL=postgresql://...`
    - `SECRET_KEY=<segredo aleatório com pelo menos 32 caracteres>`
-   - `GOOGLE_CLIENT_ID=<Client ID OAuth 2.0 Web do Google Cloud Console>`
-   - `ALLOWED_DOMAIN=<opcional, ex.: escola.edu.br>`
+   - `GOOGLE_CLIENT_ID=<Google OAuth 2.0 Web Client ID>`
+   - `ALLOWED_DOMAIN=<opcional; exemplo: escola.edu.br>`
    - `AUTH_DEV_LOGIN=false`
-3. Aplique as migrações no banco de produção e cadastre o administrador inicial:
+
+4. A partir de uma máquina segura que tenha acesso ao banco, aplique as migrações e crie o primeiro administrador:
+
    ```bash
    DATABASE_URL="postgresql://..." python -m app.migrate
-   DATABASE_URL="postgresql://..." python -m app.create_admin
+
+   ENVIRONMENT=prod \
+   DATABASE_URL="postgresql://..." \
+   SECRET_KEY="<segredo aleatório com pelo menos 32 caracteres>" \
+   GOOGLE_CLIENT_ID="<Google OAuth 2.0 Web Client ID>" \
+   ALLOWED_DOMAIN="escola.edu.br" \
+   AUTH_DEV_LOGIN=false \
+   python -m app.create_admin
    ```
-4. Faça o deploy na Vercel (`vercel --prod` ou integração Git). O `vercel.json` publica `frontend/` na CDN e encaminha `/api/*` para a Function Python em `api/index.py`.
+
+   Este comando é um bootstrap manual único, não uma etapa automática do deploy. Em produção ele não aceita
+   senha local e cria uma conta vinculada ao Google.
+
+5. Entre com a conta Google institucional informada no bootstrap.
+6. Use **Cadastros → Usuários** para cadastrar ou desativar a equipe e definir papéis, níveis e turmas.
+
+O entrypoint é `api/index.py`, que exporta a aplicação FastAPI. O `vercel.json` encaminha `/api/*` para
+a função Python e serve os arquivos estáticos de `frontend/`.
+
+## Testes
+
+```bash
+python -m pytest tests/test_auth.py
+python -m pytest tests/test_authorization.py
+pytest -q
+```
+
+A CI usa `pytest -q` com Python 3.12.
+
+## Stack técnica
+
+- **Backend:** Python, FastAPI e Pydantic v2
+- **Banco:** SQLAlchemy 2.0, Alembic, PostgreSQL ou SQLite
+- **Autenticação:** Google Identity Services e JWT de sessão da aplicação
+- **Autorização:** filtros SQL e verificações pontuais centralizados em `app/policies.py`
+- **Frontend:** HTML, CSS e JavaScript puro
+- **Deploy:** função serverless Python e frontend estático na Vercel
+
+## Estrutura do repositório
+
+- `app/` — aplicação FastAPI, modelos, esquemas, políticas, routers e autenticação
+- `frontend/` — interface HTML/CSS/JavaScript
+- `api/index.py` — entrypoint ASGI da Vercel
+- `migrations/` — migrações Alembic
+- `tests/` — fixtures e testes pytest
+- `docs/` — decisões de arquitetura e produto
+
+Detalhes técnicos:
+
+- [Arquitetura e decisões de segurança](docs/arq-decisoes-final.md)
+- [Decisões de produto](docs/decisoes-produto.md)

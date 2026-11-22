@@ -1,18 +1,32 @@
 import uuid
 
 from fastapi import APIRouter, HTTPException, status
-from sqlalchemy import delete, select
-from sqlalchemy.orm import selectinload
+from sqlalchemy import delete, func, select
+from sqlalchemy.orm import Session, selectinload
 
 from app.audit import audit
 from app.deps import AdminUser, Db, not_found
-from app.models import DEFAULT_LEVEL, SchoolClass, TeachingAssignment, User
+from app.config import settings
+from app.models import DEFAULT_LEVEL, Role, SchoolClass, TeachingAssignment, User
 from app.policies import active_year
 from app.schemas import AssignmentsUpdate, UserCreate, UserRead, UserUpdate
 from app.security import hash_password
 from app.serializers import user_read
 
 router = APIRouter(prefix="/admin/users", tags=["admin"])
+
+
+def _validate_institutional_email(email: str) -> str:
+    email = email.strip().lower()
+    if settings.environment == "prod" and settings.allowed_domain:
+        if not email.endswith("@" + settings.allowed_domain.lower()):
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT,
+                                "Use um e-mail do domínio institucional configurado")
+    return email
+
+
+def _active_admin_count(db: Session) -> int:
+    return db.scalar(select(func.count(User.id)).where(User.role == Role.admin, User.active.is_(True))) or 0
 
 
 def _load(db: Db, user_id: uuid.UUID) -> User:
@@ -46,7 +60,10 @@ def list_users(db: Db, _admin: AdminUser):
 
 @router.post("", response_model=UserRead, status_code=201)
 def create_user(payload: UserCreate, db: Db, admin: AdminUser):
-    email = str(payload.email).lower()
+    email = _validate_institutional_email(str(payload.email))
+    if settings.environment == "prod" and payload.password:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT,
+                            "Senhas locais não são permitidas em produção")
     if db.scalar(select(User.id).where(User.email == email)):
         raise HTTPException(status.HTTP_409_CONFLICT, "E-mail já cadastrado")
     user = User(name=payload.name.strip(), email=email, role=payload.role,
@@ -70,9 +87,21 @@ def update_user(user_id: uuid.UUID, payload: UserUpdate, db: Db, admin: AdminUse
     data = payload.model_dump(exclude_unset=True)
     if user.id == admin.id and (data.get("active") is False or data.get("role") not in (None, admin.role)):
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, "Você não pode desativar ou rebaixar a própria conta")
+    proposed_role = data.get("role", user.role)
+    proposed_active = data.get("active", user.active)
+    if (user.role == Role.admin and user.active
+            and _active_admin_count(db) <= 1
+            and (proposed_role != Role.admin or not proposed_active)):
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT,
+                            "Não é possível remover o último administrador ativo")
     if "password" in data:
         pw = data.pop("password")
+        if settings.environment == "prod" and pw:
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT,
+                                "Senhas locais não são permitidas em produção")
         user.password_hash = hash_password(pw) if pw else None
+    if "role" in data and "access_level" not in data:
+        data["access_level"] = DEFAULT_LEVEL[data["role"]]
     for key, value in data.items():
         setattr(user, key, value)
     audit(db, admin, "update", "user", user.id, ",".join(sorted(payload.model_fields_set)))
