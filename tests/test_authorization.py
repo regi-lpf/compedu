@@ -1,5 +1,6 @@
 """Matriz de autorização (docs/arq-decisoes-final.md §2) — cada papel × operação, incluindo casos negativos."""
 import pytest
+from app.config import settings
 
 
 def _ids(resp) -> set[str]:
@@ -235,3 +236,17 @@ def test_user_management(client, world):
     assert resp.status_code == 422
     assert client.patch(f"/api/admin/users/{world.users['admin']}", json={"active": False},
                         headers=world.h("admin")).status_code == 422
+
+
+def test_production_user_provisioning_is_google_only(client, world, monkeypatch):
+    monkeypatch.setattr(settings, "environment", "prod")
+    monkeypatch.setattr(settings, "allowed_domain", "escola.edu.br")
+
+    payload = {"name": "Prof Institucional", "email": "prof@escola.edu.br",
+               "role": "teacher", "class_ids": [str(world.classes["A"])]}
+    assert client.post("/api/admin/users", json=payload,
+                       headers=world.h("admin")).status_code == 201
+    assert client.post("/api/admin/users", json={**payload, "email": "prof@gmail.com"},
+                       headers=world.h("admin")).status_code == 422
+    assert client.post("/api/admin/users", json={**payload, "email": "outro@escola.edu.br", "password": "SenhaLocal123"},
+                       headers=world.h("admin")).status_code == 422

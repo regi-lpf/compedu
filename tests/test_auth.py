@@ -101,6 +101,17 @@ def test_password_login_is_never_enabled_in_production(client, monkeypatch):
     }).status_code == 404
 
 
+def test_admin_bootstrap_validation(monkeypatch):
+    import pytest
+    from app.create_admin import validate_bootstrap_email
+
+    monkeypatch.setattr(settings, "allowed_domain", "escola.edu.br")
+
+    assert validate_bootstrap_email("Admin@Escola.Edu.Br") == "admin@escola.edu.br"
+    with pytest.raises(SystemExit):
+        validate_bootstrap_email("admin@gmail.com")
+
+
 def test_migrations_match_models(tmp_path):
     cfg = alembic_config()
     cfg.attributes["database_url"] = f"sqlite:///{tmp_path / 'mig.db'}"
