@@ -36,16 +36,6 @@ python -m app.seed_demo
 uvicorn app.main:app --reload
 ```
 
-Windows PowerShell:
-
-```powershell
-py -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -r requirements-dev.txt
-python -m app.seed_demo
-uvicorn app.main:app --reload
-```
-
 Sem `DATABASE_URL`, o sistema usa SQLite local. O seed cria somente dados fictícios.
 
 URLs locais:
@@ -78,16 +68,17 @@ python -m app.create_admin
 
 4. A partir de uma máquina segura que tenha acesso ao banco, aplique as migrações e crie o primeiro administrador:
 
+   Linux/macOS:
+
    ```bash
    DATABASE_URL="postgresql://..." python -m app.migrate
-
    ENVIRONMENT=prod \
    DATABASE_URL="postgresql://..." \
    SECRET_KEY="<segredo aleatório com pelo menos 32 caracteres>" \
    GOOGLE_CLIENT_ID="<Google OAuth 2.0 Web Client ID>" \
    ALLOWED_DOMAIN="escola.edu.br" \
    AUTH_DEV_LOGIN=false \
-   python -m app.create_admin
+   python -m app.create_admin --name "Nome do administrador" --email "admin@escola.edu.br"
    ```
 
    Este comando é um bootstrap manual único, não uma etapa automática do deploy. Em produção ele não aceita

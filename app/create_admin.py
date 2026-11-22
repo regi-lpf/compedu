@@ -3,6 +3,7 @@
 Uso: python -m app.create_admin
 Em produção, use uma conta Google institucional; não crie senha local.
 """
+import argparse
 from getpass import getpass
 
 from sqlalchemy import select
@@ -23,10 +24,22 @@ def validate_bootstrap_email(email: str) -> str:
     return email
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Cria a conta administrativa inicial.")
+    parser.add_argument("--name", help="Nome do administrador")
+    parser.add_argument("--email", help="E-mail institucional usado no Google")
+    return parser.parse_args()
+
+
 def main() -> None:
+    args = parse_args()
     upgrade_head()
-    name = input("Nome do administrador: ").strip()
-    email = validate_bootstrap_email(input("E-mail (institucional/Google): "))
+    name = args.name.strip() if args.name else input("Nome do administrador: ").strip()
+    if not name:
+        raise SystemExit("O nome do administrador é obrigatório.")
+    email = validate_bootstrap_email(
+        args.email if args.email else input("E-mail (institucional/Google): ")
+    )
     password = None
     if settings.environment != "prod":
         password = getpass("Senha para login local (Enter para pular; mínimo 12 caracteres): ")
