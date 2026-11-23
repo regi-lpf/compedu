@@ -17,3 +17,7 @@
 * Add or update pytest coverage for behavior changes, especially role and access-level matrix cases, in `tests/`. Reuse fixtures from `tests/conftest.py`.
 * Run focused tests with `python -m pytest <test-file>`, or the full suite with `python -m pytest -q`. The CI command is `pytest -q` under Python 3.12.
 * For database setup or migrations, use `python -m app.migrate`; use `python -m app.seed_demo` only for local development data. Do not add generated `.db`, `.pyc`, cache, `.venv`, or `.vercel` files to source control.
+* Production sign-in is Google OAuth only. `/api/auth/google` must match the verified Google email to an existing active `User`; never add self-registration or automatic user creation during login.
+* Production `ENVIRONMENT=prod` always disables local password login. Preserve Google-only production bootstrap and staff provisioning rules, including `ALLOWED_DOMAIN` validation when configured.
+* `python -m app.create_admin` is a manual, one-time bootstrap against the configured database, not a Vercel build/deploy hook. It supports `--name` and `--email`; do not print or commit values from production environment variables.
+* Vercel uses explicit `@vercel/python` and `@vercel/static` builds in `vercel.json`; keep `/api/*` routed to `api/index.py` and other requests serving `frontend/`.

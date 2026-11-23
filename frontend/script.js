@@ -7,6 +7,7 @@ let announcements = [];
 let usersList = [];
 let academicYears = [];
 let dashboardData = null;
+let studentImportState = null;
 
 let selectedClass = null;
 let selectedStudent = null;
@@ -965,6 +966,7 @@ function populateAdminClassOptions() {
   ).join("");
   document.getElementById("user-form-classes").innerHTML = options;
   document.getElementById("admin-student-class").innerHTML = options;
+  document.getElementById("student-import-class").innerHTML = options;
   document.getElementById("assign-classes-select").innerHTML = options;
 
   const studentOpts = students
@@ -1084,6 +1086,114 @@ document.getElementById("student-form").addEventListener("submit", async event =
   } catch (err) {
     showFeedback(err.message, true);
   }
+});
+
+function renderStudentImportPreview(preview) {
+  const statuses = {
+    new: "Novo cadastro",
+    needs_confirmation: "Correspondência possível",
+    already_enrolled: "Já está nesta turma",
+    ambiguous: "Nome ambíguo",
+    duplicate: "Duplicado na lista",
+    invalid: "Linha inválida",
+    inactive: "Aluno inativo"
+  };
+  const summary = document.getElementById("student-import-summary");
+  summary.classList.remove("error");
+  summary.textContent =
+    `Turma ${preview.class_name}: ${preview.new_count} novo(s), ` +
+    `${preview.confirmation_count} correspondência(s) para confirmar, ` +
+    `${preview.ignored_count} linha(s) ignorada(s) e ${preview.duplicate_count} duplicado(s).`;
+
+  document.getElementById("student-import-rows").innerHTML = preview.rows.length
+    ? preview.rows.map(row => {
+      const currentClass = row.current_class_name || "sem matrícula vigente";
+      const transferText = row.status === "needs_confirmation"
+        ? `<p>${escapeHtml(currentClass)} → ${escapeHtml(preview.class_name)}</p>`
+        : "";
+      const confirmation = row.status === "needs_confirmation"
+        ? `<label class="student-import-confirm"><input type="checkbox" name="student-import-confirmation" value="${escapeHtml(row.student_id)}" data-current-class-id="${escapeHtml(row.current_class_id || "")}"><span>Confirmar matrícula/transferência</span></label>`
+        : "";
+      return `
+        <article class="student-import-row">
+          <div>
+            <strong>Linha ${row.line_number}: ${escapeHtml(row.full_name || "—")} · ${statuses[row.status]}</strong>
+            ${transferText}
+            ${row.message ? `<p>${escapeHtml(row.message)}</p>` : ""}
+          </div>
+          ${confirmation}
+        </article>
+      `;
+    }).join("")
+    : `<p class="empty-state">Nenhuma linha com aluno encontrada no arquivo.</p>`;
+  document.getElementById("student-import-confirm").classList.toggle(
+    "hidden", preview.new_count + preview.confirmation_count === 0
+  );
+  document.getElementById("student-import-cancel").classList.remove("hidden");
+  document.getElementById("student-import-preview").classList.remove("hidden");
+}
+
+function clearStudentImportPreview() {
+  studentImportState = null;
+  document.getElementById("student-import-preview").classList.add("hidden");
+}
+
+document.getElementById("student-import-file").addEventListener("change", clearStudentImportPreview);
+document.getElementById("student-import-class").addEventListener("change", clearStudentImportPreview);
+
+document.getElementById("student-import-form").addEventListener("submit", async event => {
+  event.preventDefault();
+  const file = document.getElementById("student-import-file").files[0];
+  const classId = document.getElementById("student-import-class").value;
+  if (!file || !classId) {
+    showFeedback("Selecione o arquivo e a turma de destino.", true);
+    return;
+  }
+  const submit = event.currentTarget.querySelector('button[type="submit"]');
+  submit.disabled = true;
+  try {
+    const preview = await api.previewStudentImport(file, classId);
+    studentImportState = { file, classId };
+    renderStudentImportPreview(preview);
+  } catch (err) {
+    showFeedback(err.message, true);
+  } finally {
+    submit.disabled = false;
+  }
+});
+
+document.getElementById("student-import-confirm").addEventListener("click", async event => {
+  if (!studentImportState) return;
+  const button = event.currentTarget;
+  const confirmations = [...document.querySelectorAll('input[name="student-import-confirmation"]:checked')]
+    .map(input => ({ studentId: input.value, currentClassId: input.dataset.currentClassId }));
+  button.disabled = true;
+  try {
+    const result = await api.confirmStudentImport(
+      studentImportState.file, studentImportState.classId, confirmations
+    );
+    const summary = document.getElementById("student-import-summary");
+    summary.textContent =
+      `Importação concluída: ${result.created_count} novo(s) cadastrado(s), ` +
+      `${result.enrolled_count} matrícula(s) criada(s), ${result.transferred_count} transferência(s), ` +
+      `${result.ignored_count} linha(s) ignorada(s) e ${result.duplicate_count} duplicado(s).`;
+    document.getElementById("student-import-rows").replaceChildren();
+    document.getElementById("student-import-cancel").classList.add("hidden");
+    button.classList.add("hidden");
+    studentImportState = null;
+    await refreshAllData();
+    renderAdminLists();
+  } catch (err) {
+    showFeedback(err.message, true);
+  } finally {
+    button.disabled = false;
+  }
+});
+
+document.getElementById("student-import-cancel").addEventListener("click", () => {
+  studentImportState = null;
+  document.getElementById("student-import-preview").classList.add("hidden");
+  document.getElementById("student-import-cancel").classList.remove("hidden");
 });
 
 // Submissão: Novo profissional
