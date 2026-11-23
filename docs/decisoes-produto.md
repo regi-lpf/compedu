@@ -28,6 +28,7 @@ Este documento registra as decisões de produto e o estado atual de implementaç
 - Um aluno (`Student`) possui cadastro próprio e identificador escolar único (`school_identifier`); o nome completo (`full_name`) não é chave única, permitindo homônimos.
 - O vínculo do aluno a uma turma (`Enrollment`) pertence a um ano letivo (`AcademicYear`). Trocar o aluno de turma encerra o vínculo anterior (`ended_at`) e cria um novo vínculo vigente, preservando todo o histórico de matrículas e os registros pedagógicos no contexto da turma em que foram criados.
 - Na aba **Cadastros → Alunos e matrículas** (acessível à administração e à secretaria), o formulário único permite escolher entre **criar um aluno novo já matriculado na turma** ou **vincular/transferir um aluno existente**.
+- A mesma aba permite importar listas CSV, XLS e XLSX para uma turma existente do ano ativo, com prévia e limite de 60 linhas. A importação usa nomes, ignora colunas de notas/presenças/observações, normaliza caixa e acentuação para detectar duplicatas e gera identificadores para novos alunos. Correspondências existentes e transferências exigem confirmação explícita; nomes ambíguos e linhas inválidas são ignorados e contabilizados.
 - Os vínculos de professores com turmas (`TeachingAssignment`) são associados às turmas de cada ano letivo, permitindo preparar um novo ano letivo sem recadastrar profissionais ou estudantes.
 
 ## Conta e login (implementado)

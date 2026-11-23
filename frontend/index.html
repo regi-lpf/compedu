@@ -379,6 +379,31 @@
             <h3>Alunos cadastrados</h3>
             <div id="admin-student-list" class="admin-list"></div>
           </div>
+          <section class="admin-import panel">
+            <div>
+              <h3>Importar lista de alunos</h3>
+              <p class="admin-notice">Envie CSV, XLS ou XLSX. A primeira aba será lida; usamos a coluna com cabeçalho Nome/Aluno ou, sem cabeçalho, a primeira coluna. Notas, presenças e observações são ignoradas. Novos alunos recebem identificadores automáticos. Até 60 linhas por arquivo.</p>
+            </div>
+            <form id="student-import-form">
+              <label>
+                <span>Arquivo da lista</span>
+                <input id="student-import-file" type="file" accept=".csv,.xls,.xlsx" required>
+              </label>
+              <label>
+                <span>Turma de destino (ano ativo)</span>
+                <select id="student-import-class" required></select>
+              </label>
+              <button class="btn secondary" type="submit">Ver prévia</button>
+            </form>
+            <div id="student-import-preview" class="student-import-preview hidden">
+              <div id="student-import-summary" class="alert-box" role="status"></div>
+              <div id="student-import-rows" class="student-import-rows"></div>
+              <div class="card-inline-actions">
+                <button class="btn primary" id="student-import-confirm" type="button">Confirmar importação</button>
+                <button class="btn secondary" id="student-import-cancel" type="button">Cancelar prévia</button>
+              </div>
+            </div>
+          </section>
         </section>
 
         <!-- ABA PROFISSIONAIS (admin) -->

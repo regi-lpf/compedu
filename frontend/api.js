@@ -15,8 +15,9 @@ function setToken(token) {
 
 async function apiRequest(endpoint, options = {}) {
   const token = getToken();
+  const isFormData = options.body instanceof FormData;
   const headers = {
-    "Content-Type": "application/json",
+    ...(!isFormData ? { "Content-Type": "application/json" } : {}),
     ...(token ? { "Authorization": `Bearer ${token}` } : {}),
     ...(options.headers || {})
   };
@@ -111,6 +112,22 @@ const api = {
     method: "POST",
     body: JSON.stringify({ class_id: classId })
   }),
+  previewStudentImport: (file, classId) => {
+    const body = new FormData();
+    body.append("file", file);
+    body.append("class_id", classId);
+    return apiRequest("/students/import/preview", { method: "POST", body });
+  },
+  confirmStudentImport: (file, classId, confirmations) => {
+    const body = new FormData();
+    body.append("file", file);
+    body.append("class_id", classId);
+    confirmations.forEach(item => {
+      body.append("confirmed_student_ids", item.studentId);
+      body.append("expected_class_ids", item.currentClassId);
+    });
+    return apiRequest("/students/import/confirm", { method: "POST", body });
+  },
 
   // Registros pedagógicos
   getRecords: (params = {}) => apiRequest(`/records${toQuery(params)}`),

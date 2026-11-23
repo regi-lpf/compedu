@@ -11,6 +11,7 @@ O controle de acesso combina duas dimensões:
 - mural interno de comunicados;
 - registros pedagógicos de estudantes;
 - turmas, matrículas e histórico anual;
+- importação em lote de alunos por listas CSV, XLS ou XLSX;
 - perfis, papéis e níveis da equipe escolar;
 - painel, relatórios e trilha de auditoria.
 

@@ -1,5 +1,6 @@
 import uuid
 from datetime import date, datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
@@ -169,6 +170,36 @@ class StudentRead(BaseModel):
 
 class StudentDetail(StudentRead):
     enrollments: list[EnrollmentRead]
+
+
+class StudentImportRowRead(BaseModel):
+    line_number: int
+    full_name: str | None
+    status: Literal[
+        "new", "needs_confirmation", "already_enrolled", "ambiguous", "duplicate", "invalid", "inactive",
+    ]
+    student_id: uuid.UUID | None = None
+    current_class_id: uuid.UUID | None = None
+    current_class_name: str | None = None
+    message: str | None = None
+
+
+class StudentImportPreview(BaseModel):
+    class_id: uuid.UUID
+    class_name: str
+    rows: list[StudentImportRowRead]
+    new_count: int
+    confirmation_count: int
+    ignored_count: int
+    duplicate_count: int
+
+
+class StudentImportResult(BaseModel):
+    created_count: int
+    enrolled_count: int
+    transferred_count: int
+    ignored_count: int
+    duplicate_count: int
 
 
 # ---------- Registros pedagógicos ----------
